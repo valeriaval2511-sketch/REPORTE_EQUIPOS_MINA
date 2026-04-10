@@ -288,47 +288,52 @@
     }
 
     async function sincronizar() {
-      const registros = JSON.parse(localStorage.getItem("data") || "[]");
+  const registros = JSON.parse(localStorage.getItem("data") || "[]");
 
-      if (registros.length === 0) {
-        mostrarMensaje("No hay registros pendientes.");
-        return;
+  if (registros.length === 0) {
+    mostrarMensaje("No hay registros pendientes.");
+    return;
+  }
+
+  if (!navigator.onLine) {
+    mostrarMensaje("No hay internet. Los datos siguen guardados en el equipo.");
+    return;
+  }
+
+  let enviados = 0;
+  const pendientes = [];
+
+  for (const r of registros) {
+    try {
+      const resp = await fetch(URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(r)
+      });
+
+      const texto = await resp.text();
+
+      if (resp.ok && texto.toLowerCase().includes("ok")) {
+        enviados++;
+      } else {
+        pendientes.push(r);
       }
 
-      if (!navigator.onLine) {
-        mostrarMensaje("No hay internet. Los datos siguen guardados en el equipo.");
-        return;
-      }
-
-      let enviados = 0;
-      const pendientes = [];
-
-      for (const r of registros) {
-        try {
-          const resp = await fetch(URL, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify(r)
-          });
-
-          const texto = await resp.text();
-
-          if (resp.ok && texto.toLowerCase().includes("ok")) {
-            enviados++;
-          } else {
-            pendientes.push(r);
-          }
-        } catch (e) {
-          pendientes.push(r);
-        }
-      }
-
-      localStorage.setItem("data", JSON.stringify(pendientes));
-      mostrarMensaje("Sincronizados: " + enviados + ". Pendientes: " + pendientes.length);
-      actualizarContador();
+    } catch (e) {
+      pendientes.push(r);
     }
+  }
+
+  localStorage.setItem("data", JSON.stringify(pendientes));
+
+  mostrarMensaje(
+    "Enviados: " + enviados + " | Pendientes: " + pendientes.length
+  );
+
+  actualizarContador();
+}
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
