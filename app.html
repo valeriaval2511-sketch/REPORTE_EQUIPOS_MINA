@@ -310,8 +310,30 @@
     return;
   }
 
- try {
-  const resp = await fetch(URL, {
+const btn = document.querySelector(".btn-sync");
+btn.disabled = true;
+btn.textContent = "Sincronizando...";
+
+  try {
+  await fetch(URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(registros)
+  });
+
+  localStorage.removeItem("data");
+
+  document.getElementById("contador").textContent =
+    "Pendientes por sincronizar: 0";
+
+  mostrarMensaje("Sincronización completa ✅");
+
+} catch (error) {
+  console.error(error);
+  mostrarMensaje("Error de conexión");
+}
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -336,6 +358,10 @@
   console.error(error);
   mostrarMensaje("Error de conexión");
 }
+
+    btn.disabled = false;
+btn.textContent = "Sincronizar";
+    
 }
 
     if ("serviceWorker" in navigator) {
