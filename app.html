@@ -338,15 +338,16 @@
     btn.textContent = "Sincronizando...";
 
     try {
-      await fetch(URL, {
-        method: "POST",
-        mode: "no-cors",
-headers: {
-  "Content-Type": "text/plain"
-},
-        body: JSON.stringify(registros)
-      });
-
+      for (const r of registros) {
+  await fetch(URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "text/plain"
+    },
+    body: JSON.stringify(r)
+  });
+}
       localStorage.setItem("data", "[]");
       actualizarContador();
       mostrarMensaje(`Sincronización completa ✅ (${registros.length})`);
