@@ -211,10 +211,12 @@
     const URL = "https://script.google.com/macros/s/AKfycbxOw5mq_7kqrdQkyhTSh57mzny_LuZTyPjl3OLgl30hF8CkNsSkcJgVW8B9ezHO82b6qA/exec";
 
     function obtenerTurno() {
-      const ahora = new Date();
-      const h = ahora.getHours();
-      return (h >= 7 && h < 19) ? "Día" : "Noche";
-    }
+  const horaPeru = new Date(
+    new Date().toLocaleString("en-US", { timeZone: "America/Lima" })
+  ).getHours();
+
+  return (horaPeru >= 7 && horaPeru < 19) ? "Día" : "Noche";
+}
 
     function actualizarTurno() {
       document.getElementById("turno").value = obtenerTurno();
@@ -269,8 +271,14 @@
 
       const data = {
         fecha: new Date().toLocaleString("es-PE", {
-          timeZone: "America/Lima"
-          }),
+          timeZone: "America/Lima",
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit"
+        }),
         trabajador,
         equipo,
         labor,
@@ -328,13 +336,17 @@
     }
   }
 
-localStorage.removeItem("data");
+if (pendientes.length === 0) {
+  localStorage.removeItem("data");
+} else {
+  localStorage.setItem("data", JSON.stringify(pendientes));
+}
+
+actualizarContador();
+
 mostrarMensaje(
   "Enviados: " + enviados + " | Pendientes: " + pendientes.length
 );
-setTimeout(() => {
-  actualizarContador();
-}, 100);
 }
 
     if ("serviceWorker" in navigator) {
