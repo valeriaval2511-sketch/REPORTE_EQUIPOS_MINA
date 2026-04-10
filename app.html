@@ -325,11 +325,11 @@
 
       const texto = await resp.text();
 
-      if (resp.ok && texto.toLowerCase().includes("ok")) {
-        enviados++;
-      } else {
-        pendientes.push(r);
-      }
+      if (resp.ok) {
+  enviados++;
+} else {
+  pendientes.push(r);
+}
 
     } catch (e) {
       pendientes.push(r);
