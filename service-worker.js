@@ -31,6 +31,12 @@ self.addEventListener("activate", event => {
 });
 
 self.addEventListener("fetch", event => {
+  const url = event.request.url;
+
+  if (url.includes("script.google.com")) {
+    return;
+  }
+
   if (event.request.method !== "GET") return;
 
   event.respondWith(
