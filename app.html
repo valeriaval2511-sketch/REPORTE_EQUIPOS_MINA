@@ -310,52 +310,32 @@
     return;
   }
 
-  let enviados = 0;
-  const pendientes = [];
+ try {
+  const resp = await fetch(URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(registros)
+  });
 
-  for (const r of registros) {
-    try {
-      const resp = await fetch(URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(r)
-      });
+  if (resp.ok) {
+    localStorage.removeItem("data");
 
-      const texto = await resp.text();
+    document.getElementById("contador").textContent =
+      "Pendientes por sincronizar: 0";
 
-      if (resp.ok) {
-  enviados++;
-} else {
-  pendientes.push(r);
-}
+    mostrarMensaje("Sincronización completa ✅");
 
-    } catch (e) {
-      pendientes.push(r);
-    }
+    setTimeout(() => location.reload(), 300);
+  } else {
+    mostrarMensaje("Error en servidor");
   }
 
-if (pendientes.length === 0) {
-  localStorage.removeItem("data");
-} else {
-  localStorage.setItem("data", JSON.stringify(pendientes));
+} catch (error) {
+  console.error(error);
+  mostrarMensaje("Error de conexión");
 }
-
-// LEER ESTADO REAL DESPUÉS DE BORRAR
-const nuevos = JSON.parse(localStorage.getItem("data") || "[]");
-
-// ACTUALIZAR CONTADOR MANUALMENTE
-document.getElementById("contador").textContent =
-  "Pendientes por sincronizar: " + nuevos.length;
-
-// MENSAJE
-mostrarMensaje(
-  "Enviados: " + enviados + " | Pendientes: " + nuevos.length
-);
-setTimeout(() => {
-  location.reload();
-}, 300);
 }
 
     if ("serviceWorker" in navigator) {
