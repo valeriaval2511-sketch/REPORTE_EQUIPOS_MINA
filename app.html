@@ -207,149 +207,170 @@
     </div>
   </div>
 
-  <script>
-    const URL = "https://script.google.com/macros/s/AKfycbxOw5mq_7kqrdQkyhTSh57mzny_LuZTyPjl3OLgl30hF8CkNsSkcJgVW8B9ezHO82b6qA/exec";
+<script>
+  const URL = "https://script.google.com/macros/s/AKfycbxOw5mq_7kqrdQkyhTSh57mzny_LuZTyPjl3OLgl30hF8CkNsSkcJgVW8B9ezHO82b6qA/exec";
+  let sincronizando = false;
 
-    function obtenerTurno() {
-  const horaPeru = new Date(
-    new Date().toLocaleString("en-US", { timeZone: "America/Lima" })
-  ).getHours();
+  function obtenerPartesPeru() {
+    const parts = new Intl.DateTimeFormat("es-PE", {
+      timeZone: "America/Lima",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false
+    }).formatToParts(new Date());
 
-  return (horaPeru >= 7 && horaPeru < 19) ? "Día" : "Noche";
-}
-
-    function actualizarTurno() {
-      document.getElementById("turno").value = obtenerTurno();
-    }
-
-    function mostrarMensaje(texto) {
-      document.getElementById("mensaje").textContent = texto;
-    }
-
-    function actualizarContador() {
-      const registros = JSON.parse(localStorage.getItem("data") || "[]");
-      document.getElementById("contador").textContent =
-        "Pendientes por sincronizar: " + registros.length;
-    }
-
-    function actualizarConexion() {
-      const el = document.getElementById("estadoConexion");
-      if (navigator.onLine) {
-        el.textContent = "Con conexión";
-        el.style.background = "#dcfce7";
-        el.style.color = "#166534";
-      } else {
-        el.textContent = "Sin conexión";
-        el.style.background = "#fee2e2";
-        el.style.color = "#991b1b";
+    const data = {};
+    for (const p of parts) {
+      if (p.type !== "literal") {
+        data[p.type] = p.value;
       }
     }
+    return data;
+  }
 
-    function limpiarFormulario() {
-      document.getElementById("trabajador").value = "";
-      document.getElementById("equipo").value = "";
-      document.getElementById("labor").value = "";
-      document.getElementById("estado").value = "Operativo";
-      document.getElementById("guardia").value = "";
-      document.getElementById("obs").value = "";
-      actualizarTurno();
+  function obtenerFechaHoraPeru() {
+    const p = obtenerPartesPeru();
+    return `${p.day}/${p.month}/${p.year} ${p.hour}:${p.minute}:${p.second}`;
+  }
+
+  function obtenerTurno() {
+    const p = obtenerPartesPeru();
+    const h = Number(p.hour);
+    return (h >= 7 && h < 19) ? "Día" : "Noche";
+  }
+
+  function actualizarTurno() {
+    document.getElementById("turno").value = obtenerTurno();
+  }
+
+  function mostrarMensaje(texto) {
+    document.getElementById("mensaje").textContent = texto;
+  }
+
+  function actualizarContador() {
+    const registros = JSON.parse(localStorage.getItem("data") || "[]");
+    document.getElementById("contador").textContent =
+      "Pendientes por sincronizar: " + registros.length;
+  }
+
+  function actualizarConexion() {
+    const el = document.getElementById("estadoConexion");
+    if (navigator.onLine) {
+      el.textContent = "Con conexión";
+      el.style.background = "#dcfce7";
+      el.style.color = "#166534";
+    } else {
+      el.textContent = "Sin conexión";
+      el.style.background = "#fee2e2";
+      el.style.color = "#991b1b";
+    }
+  }
+
+  function limpiarFormulario() {
+    document.getElementById("trabajador").value = "";
+    document.getElementById("equipo").value = "";
+    document.getElementById("labor").value = "";
+    document.getElementById("estado").value = "Operativo";
+    document.getElementById("guardia").value = "";
+    document.getElementById("obs").value = "";
+    actualizarTurno();
+  }
+
+  function guardar() {
+    const trabajador = document.getElementById("trabajador").value.trim();
+    const equipo = document.getElementById("equipo").value.trim();
+    const labor = document.getElementById("labor").value.trim();
+    const estado = document.getElementById("estado").value;
+    const guardia = document.getElementById("guardia").value;
+    const turno = document.getElementById("turno").value;
+    const observacion = document.getElementById("obs").value.trim();
+
+    if (!trabajador || !equipo || !labor || !guardia) {
+      mostrarMensaje("Completa trabajador, equipo, labor y guardia.");
+      return;
     }
 
-    function guardar() {
-      const trabajador = document.getElementById("trabajador").value.trim();
-      const equipo = document.getElementById("equipo").value.trim();
-      const labor = document.getElementById("labor").value.trim();
-      const estado = document.getElementById("estado").value;
-      const guardia = document.getElementById("guardia").value;
-      const turno = document.getElementById("turno").value;
-      const observacion = document.getElementById("obs").value.trim();
+    const data = {
+      fecha: obtenerFechaHoraPeru(),
+      trabajador,
+      equipo,
+      labor,
+      estado,
+      guardia,
+      turno,
+      observacion
+    };
 
-      if (!trabajador || !equipo || !labor || !guardia) {
-        mostrarMensaje("Completa trabajador, equipo, labor y guardia.");
-        return;
-      }
+    const registros = JSON.parse(localStorage.getItem("data") || "[]");
+    registros.push(data);
+    localStorage.setItem("data", JSON.stringify(registros));
 
-      const data = {
-        fecha: new Date().toLocaleString("es-PE", {
-          timeZone: "America/Lima",
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit"
-        }),
-        trabajador,
-        equipo,
-        labor,
-        estado,
-        guardia,
-        turno,
-        observacion
-      };
-
-      const registros = JSON.parse(localStorage.getItem("data") || "[]");
-      registros.push(data);
-      localStorage.setItem("data", JSON.stringify(registros));
-
-      mostrarMensaje("Registro guardado offline.");
-      actualizarContador();
-      limpiarFormulario();
-    }
+    mostrarMensaje("Registro guardado offline.");
+    actualizarContador();
+    limpiarFormulario();
+  }
 
   async function sincronizar() {
-  const registros = JSON.parse(localStorage.getItem("data") || "[]");
-
-  if (registros.length === 0) {
-    mostrarMensaje("No hay registros pendientes.");
-    return;
-  }
-
-  if (!navigator.onLine) {
-    mostrarMensaje("No hay internet.");
-    return;
-  }
-
-  const btn = document.querySelector(".btn-sync");
-  btn.disabled = true;
-  btn.textContent = "Sincronizando...";
-
-  try {
-    await fetch(URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(registros)
-    });
-
-    localStorage.removeItem("data");
-
-    document.getElementById("contador").textContent =
-      "Pendientes por sincronizar: 0";
-
-    mostrarMensaje("Sincronización completa ✅");
-
-  } catch (error) {
-    console.error(error);
-    mostrarMensaje("Error de conexión");
-  }
-
-  btn.disabled = false;
-  btn.textContent = "Sincronizar";
-}
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./service-worker.js");
-      });
+    if (sincronizando) {
+      mostrarMensaje("Ya se está sincronizando...");
+      return;
     }
 
-    window.addEventListener("online", actualizarConexion);
-    window.addEventListener("offline", actualizarConexion);
+    const registros = JSON.parse(localStorage.getItem("data") || "[]");
 
-    actualizarTurno();
-    actualizarContador();
-    actualizarConexion();
-  </script>
+    if (registros.length === 0) {
+      mostrarMensaje("No hay registros pendientes.");
+      return;
+    }
+
+    if (!navigator.onLine) {
+      mostrarMensaje("No hay internet. Los datos siguen guardados en el equipo.");
+      return;
+    }
+
+    const btn = document.querySelector(".btn-sync");
+    sincronizando = true;
+    btn.disabled = true;
+    btn.textContent = "Sincronizando...";
+
+    try {
+      await fetch(URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(registros)
+      });
+
+      localStorage.setItem("data", "[]");
+      actualizarContador();
+      mostrarMensaje(`Sincronización completa ✅ (${registros.length})`);
+    } catch (error) {
+      console.error(error);
+      mostrarMensaje("Error de conexión");
+    } finally {
+      sincronizando = false;
+      btn.disabled = false;
+      btn.textContent = "Sincronizar";
+    }
+  }
+
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("./service-worker.js");
+    });
+  }
+
+  window.addEventListener("online", actualizarConexion);
+  window.addEventListener("offline", actualizarConexion);
+
+  actualizarTurno();
+  actualizarContador();
+  actualizarConexion();
+</script>
 </body>
 </html>
