@@ -342,11 +342,20 @@ if (pendientes.length === 0) {
   localStorage.setItem("data", JSON.stringify(pendientes));
 }
 
-actualizarContador();
+// LEER ESTADO REAL DESPUÉS DE BORRAR
+const nuevos = JSON.parse(localStorage.getItem("data") || "[]");
 
+// ACTUALIZAR CONTADOR MANUALMENTE
+document.getElementById("contador").textContent =
+  "Pendientes por sincronizar: " + nuevos.length;
+
+// MENSAJE
 mostrarMensaje(
-  "Enviados: " + enviados + " | Pendientes: " + pendientes.length
+  "Enviados: " + enviados + " | Pendientes: " + nuevos.length
 );
+setTimeout(() => {
+  location.reload();
+}, 300);
 }
 
     if ("serviceWorker" in navigator) {
