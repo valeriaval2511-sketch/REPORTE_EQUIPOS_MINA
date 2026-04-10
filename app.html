@@ -297,7 +297,7 @@
       limpiarFormulario();
     }
 
-    async function sincronizar() {
+  async function sincronizar() {
   const registros = JSON.parse(localStorage.getItem("data") || "[]");
 
   if (registros.length === 0) {
@@ -306,42 +306,23 @@
   }
 
   if (!navigator.onLine) {
-    mostrarMensaje("No hay internet. Los datos siguen guardados en el equipo.");
+    mostrarMensaje("No hay internet.");
     return;
   }
 
-const btn = document.querySelector(".btn-sync");
-btn.disabled = true;
-btn.textContent = "Sincronizando...";
+  const btn = document.querySelector(".btn-sync");
+  btn.disabled = true;
+  btn.textContent = "Sincronizando...";
 
   try {
-  await fetch(URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(registros)
-  });
+    await fetch(URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(registros)
+    });
 
-  localStorage.removeItem("data");
-
-  document.getElementById("contador").textContent =
-    "Pendientes por sincronizar: 0";
-
-  mostrarMensaje("Sincronización completa ✅");
-
-} catch (error) {
-  console.error(error);
-  mostrarMensaje("Error de conexión");
-}
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(registros)
-  });
-
-  if (resp.ok) {
     localStorage.removeItem("data");
 
     document.getElementById("contador").textContent =
@@ -349,21 +330,14 @@ btn.textContent = "Sincronizando...";
 
     mostrarMensaje("Sincronización completa ✅");
 
-    setTimeout(() => location.reload(), 300);
-  } else {
-    mostrarMensaje("Error en servidor");
+  } catch (error) {
+    console.error(error);
+    mostrarMensaje("Error de conexión");
   }
 
-} catch (error) {
-  console.error(error);
-  mostrarMensaje("Error de conexión");
+  btn.disabled = false;
+  btn.textContent = "Sincronizar";
 }
-
-    btn.disabled = false;
-btn.textContent = "Sincronizar";
-    
-}
-
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker.register("./service-worker.js");
