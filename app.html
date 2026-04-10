@@ -328,7 +328,7 @@
     }
   }
 
-localStorage.setItem("data", JSON.stringify(pendientes));
+localStorage.removeItem("data");
 mostrarMensaje(
   "Enviados: " + enviados + " | Pendientes: " + pendientes.length
 );
