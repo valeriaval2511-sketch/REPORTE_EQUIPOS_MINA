@@ -268,7 +268,9 @@
       }
 
       const data = {
-        fecha: new Date().toISOString(),
+        fecha: new Date().toLocaleString("es-PE", {
+          timeZone: "America/Lima"
+          }),
         trabajador,
         equipo,
         labor,
@@ -326,13 +328,13 @@
     }
   }
 
-  localStorage.setItem("data", JSON.stringify(pendientes));
-
-  mostrarMensaje(
-    "Enviados: " + enviados + " | Pendientes: " + pendientes.length
-  );
-
+localStorage.setItem("data", JSON.stringify(pendientes));
+mostrarMensaje(
+  "Enviados: " + enviados + " | Pendientes: " + pendientes.length
+);
+setTimeout(() => {
   actualizarContador();
+}, 100);
 }
 
     if ("serviceWorker" in navigator) {
