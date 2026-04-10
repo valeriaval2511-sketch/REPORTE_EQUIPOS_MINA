@@ -212,25 +212,25 @@
   let sincronizando = false;
 
   function obtenerPartesPeru() {
-    const parts = new Intl.DateTimeFormat("es-PE", {
-      timeZone: "America/Lima",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false
-    }).formatToParts(new Date());
+  const parts = new Intl.DateTimeFormat("es-PE", {
+    timeZone: "America/Lima",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false
+  }).formatToParts(new Date());
 
-    const data = {};
-    for (const p of parts) {
-      if (p.type !== "literal") {
-        data[p.type] = p.value;
-      }
+  const data = {};
+  for (const p of parts) {
+    if (p.type !== "literal") {
+      data[p.type] = p.value;
     }
-    return data;
   }
+  return data;
+}
 
   function obtenerFechaHoraPeru() {
     const p = obtenerPartesPeru();
@@ -340,9 +340,10 @@
     try {
       await fetch(URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        mode: "no-cors",
+headers: {
+  "Content-Type": "text/plain"
+},
         body: JSON.stringify(registros)
       });
 
@@ -359,11 +360,6 @@
     }
   }
 
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./service-worker.js");
-    });
-  }
 
   window.addEventListener("online", actualizarConexion);
   window.addEventListener("offline", actualizarConexion);
