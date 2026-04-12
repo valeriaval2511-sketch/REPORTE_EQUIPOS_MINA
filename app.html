@@ -136,13 +136,20 @@
       <p class="sub">REPORTE DE UBICACIÓN DE EQUIPOS</p>
       <div class="pill" id="estadoConexion">Verificando conexión...</div>
 
-      <label for="trabajador">Trabajador</label>
-      <input id="trabajador" list="listaTrabajadores" placeholder="Escribe el nombre">
-      <datalist id="listaTrabajadores">
-        <option value="Valeria Diaz">
-        <option value="Juan Perez">
-        <option value="Luis Ramos">
-        <option value="Carlos Quispe">
+      <label for="tipo">Tipo de registro</label>
+      <select id="tipo">
+        <option value="Salida">Salida (cómo dejo el equipo)</option>
+        <option value="Entrada">Entrada (cómo lo recibo)</option>
+      </select>
+
+
+      <label for="dni">DNI del operador</label>
+      <input id="dni" list="listaDNITrabajadores" placeholder="Ingrese DNI">    
+      <datalist id="listaDNITrabajadores">
+        <option value="88526176">
+        <option value="40607489">
+        <option value="12584652">
+        <option value="71526388">
       </datalist>
 
       <label for="equipo">Equipo</label>
@@ -196,16 +203,31 @@
       <label for="obs">Observación</label>
       <textarea id="obs" placeholder="Escribe la observación"></textarea>
 
+      <label>Foto del equipo</label>
+      <input type="file" id="foto" accept="image/*">
+
       <div class="btns">
+
         <button class="btn-save" onclick="guardar()">Guardar</button>
         <button class="btn-sync" onclick="sincronizar()">Sincronizar</button>
       </div>
 
+      <hr>
+      <label>Filtrar por Guardia</label>
+      <select id="filtroGuardia">
+        <option value="">Todas</option>
+        <option value="A">A</option>
+        <option value="B">B</option>
+        <option value="C">C</option>
+      </select>
+      <label>Filtrar por Fecha</label>
+      <input type="date" id="filtroFecha">
+      
+      <div id="tablaResumen"></div>
       <div class="status-box" id="mensaje">Listo para registrar.</div>
       <div class="count" id="contador"></div>
       <div class="small">Turno: Día = 7am a 7pm, Noche = 7pm a 7am.</div>
-    </div>
-  </div>
+
 
 <script>
   const URL = "https://script.google.com/macros/s/AKfycbxOw5mq_7kqrdQkyhTSh57mzny_LuZTyPjl3OLgl30hF8CkNsSkcJgVW8B9ezHO82b6qA/exec";
@@ -271,7 +293,7 @@
   }
 
   function limpiarFormulario() {
-    document.getElementById("trabajador").value = "";
+    document.getElementById("dni").value = "";
     document.getElementById("equipo").value = "";
     document.getElementById("labor").value = "";
     document.getElementById("estado").value = "Operativo";
@@ -281,7 +303,7 @@
   }
 
   function guardar() {
-    const trabajador = document.getElementById("trabajador").value.trim();
+    const dni = document.getElementById("dni").value.trim();
     const equipo = document.getElementById("equipo").value.trim();
     const labor = document.getElementById("labor").value.trim();
     const estado = document.getElementById("estado").value;
@@ -289,14 +311,14 @@
     const turno = document.getElementById("turno").value;
     const observacion = document.getElementById("obs").value.trim();
 
-    if (!trabajador || !equipo || !labor || !guardia) {
-      mostrarMensaje("Completa trabajador, equipo, labor y guardia.");
+    if (!dni || !equipo || !labor || !guardia) {
+      mostrarMensaje("Completar dni, equipo, labor y guardia.");
       return;
     }
 
     const data = {
       fecha: obtenerFechaHoraPeru(),
-      trabajador,
+      dni,
       equipo,
       labor,
       estado,
@@ -314,6 +336,8 @@
     mostrarMensaje("Registro guardado offline.");
     actualizarContador();
     limpiarFormulario();
+
+    mostrarTabla();
   }
 
   async function sincronizar() {
@@ -321,35 +345,34 @@
       mostrarMensaje("Ya se está sincronizando...");
       return;
     }
+        const registros = JSON.parse(localStorage.getItem("data") || "[]");
 
-    const registros = JSON.parse(localStorage.getItem("data") || "[]");
-
-    if (registros.length === 0) {
-      mostrarMensaje("No hay registros pendientes.");
-      return;
-    }
-
-    if (!navigator.onLine) {
-      mostrarMensaje("No hay internet. Los datos siguen guardados en el equipo.");
-      return;
-    }
-
-    const btn = document.querySelector(".btn-sync");
-    sincronizando = true;
-    btn.disabled = true;
-    btn.textContent = "Sincronizando...";
-
-    try {
-      for (const r of registros) {
-  await fetch(URL, {
-    method: "POST",
-    mode: "no-cors",
-    headers: {
-      "Content-Type": "text/plain"
-    },
-    body: JSON.stringify(r)
-  });
-}
+            if (registros.length === 0) {
+              mostrarMensaje("No hay registros pendientes.");
+              return;
+            }
+        
+            if (!navigator.onLine) {
+              mostrarMensaje("No hay internet. Los datos siguen guardados en el equipo.");
+              return;
+            }
+        
+            const btn = document.querySelector(".btn-sync");
+            sincronizando = true;
+            btn.disabled = true;
+            btn.textContent = "Sincronizando...";
+        
+            try {
+              for (const r of registros) {
+          await fetch(URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: {
+              "Content-Type": "text/plain"
+            },
+            body: JSON.stringify(r)
+          });
+          }
       localStorage.removeItem("data"); // ← más limpio que poner "[]"
       actualizarContador(); // ← recalcula desde cero
       mostrarMensaje(`Sincronización completa ✅ (${registros.length})`);
@@ -362,6 +385,42 @@
       btn.textContent = "Sincronizar";
     }
   }
+  function mostrarTabla() {
+        const registros = JSON.parse(localStorage.getItem("data") || "[]");
+      
+        const guardiaFiltro = document.getElementById("filtroGuardia")?.value || "";
+        const fechaFiltro = document.getElementById("filtroFecha")?.value || "";
+      
+        let html = "<table border='1' style='width:100%; font-size:12px'>";
+        html += "<tr><th>Equipo</th><th>Labor</th><th>Estado</th><th>Obs</th><th>Guardia</th><th>Fecha</th></tr>";
+      
+        registros.forEach(r => {
+      
+          let fechaRegistro = "";
+          if (r.fecha) {
+            const partes = r.fecha.split(" ")[0].split("/");
+            fechaRegistro = `${partes[2]}-${partes[1]}-${partes[0]}`;
+          }
+      
+          if (
+            (guardiaFiltro === "" || r.guardia === guardiaFiltro) &&
+            (fechaFiltro === "" || fechaRegistro === fechaFiltro)
+          ) {
+            html += `<tr>
+              <td>${r.equipo}</td>
+              <td>${r.labor}</td>
+              <td>${r.estado}</td>
+              <td>${r.observacion}</td>
+              <td>${r.guardia}</td>
+              <td>${r.fecha}</td>
+            </tr>`;
+          }
+      
+        });
+    
+      html += "</table>";
+      document.getElementById("tablaResumen").innerHTML = html;
+    }
 
 
   window.addEventListener("online", () => {
@@ -369,11 +428,17 @@
     mostrarMensaje("Conexión recuperada. Sincronizando...");
     sincronizar();
   });
+
+  document.getElementById("filtroGuardia").addEventListener("change", mostrarTabla);
+  document.getElementById("filtroFecha").addEventListener("change", mostrarTabla);
+  
   window.addEventListener("offline", actualizarConexion);
 
   actualizarTurno();
   actualizarContador();
   actualizarConexion();
+  mostrarTabla();
+ 
 </script>
 </body>
 </html>
