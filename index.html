@@ -318,7 +318,7 @@
 
     const data = {
       fecha: obtenerFechaHoraPeru(),
-      tipo,
+      tipo: tipo || "Sin definir",
       dni,
       equipo,
       labor,
@@ -364,15 +364,20 @@
         
             try {
               for (const r of registros) {
-          await fetch(URL, {
-            method: "POST",
-            mode: "no-cors",
-            headers: {
-              "Content-Type": "text/plain"
-            },
-            body: JSON.stringify(r)
-          });
-          }
+
+                if (!r.tipo) {
+                  r.tipo = "Sin definir";
+                }
+              
+                await fetch(URL, {
+                  method: "POST",
+                  mode: "no-cors",
+                  headers: {
+                    "Content-Type": "text/plain"
+                  },
+                  body: JSON.stringify(r)
+                });
+              }
       localStorage.removeItem("data"); // ← más limpio que poner "[]"
       actualizarContador(); // ← recalcula desde cero
       mostrarMensaje(`Sincronización completa ✅ (${registros.length})`);
