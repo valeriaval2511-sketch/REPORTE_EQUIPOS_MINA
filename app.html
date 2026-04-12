@@ -364,7 +364,11 @@
   }
 
 
-  window.addEventListener("online", actualizarConexion);
+  window.addEventListener("online", () => {
+    actualizarConexion();
+    mostrarMensaje("Conexión recuperada. Sincronizando...");
+    sincronizar();
+  });
   window.addEventListener("offline", actualizarConexion);
 
   actualizarTurno();
