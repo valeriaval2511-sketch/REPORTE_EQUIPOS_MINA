@@ -303,6 +303,7 @@
   }
 
   function guardar() {
+    const tipo = document.getElementById("tipo").value;
     const dni = document.getElementById("dni").value.trim();
     const equipo = document.getElementById("equipo").value.trim();
     const labor = document.getElementById("labor").value.trim();
@@ -310,7 +311,6 @@
     const guardia = document.getElementById("guardia").value;
     const turno = document.getElementById("turno").value;
     const observacion = document.getElementById("obs").value.trim();
-
     if (!dni || !equipo || !labor || !guardia) {
       mostrarMensaje("Completar dni, equipo, labor y guardia.");
       return;
@@ -318,6 +318,7 @@
 
     const data = {
       fecha: obtenerFechaHoraPeru(),
+      tipo,
       dni,
       equipo,
       labor,
@@ -336,7 +337,6 @@
     mostrarMensaje("Registro guardado offline.");
     actualizarContador();
     limpiarFormulario();
-
     mostrarTabla();
   }
 
@@ -385,42 +385,42 @@
       btn.textContent = "Sincronizar";
     }
   }
+  
   function mostrarTabla() {
-        const registros = JSON.parse(localStorage.getItem("data") || "[]");
-      
-        const guardiaFiltro = document.getElementById("filtroGuardia")?.value || "";
-        const fechaFiltro = document.getElementById("filtroFecha")?.value || "";
-      
-        let html = "<table border='1' style='width:100%; font-size:12px'>";
-        html += "<tr><th>Equipo</th><th>Labor</th><th>Estado</th><th>Obs</th><th>Guardia</th><th>Fecha</th></tr>";
-      
-        registros.forEach(r => {
-      
-          let fechaRegistro = "";
-          if (r.fecha) {
-            const partes = r.fecha.split(" ")[0].split("/");
-            fechaRegistro = `${partes[2]}-${partes[1]}-${partes[0]}`;
-          }
-      
-          if (
-            (guardiaFiltro === "" || r.guardia === guardiaFiltro) &&
-            (fechaFiltro === "" || fechaRegistro === fechaFiltro)
-          ) {
-            html += `<tr>
-              <td>${r.equipo}</td>
-              <td>${r.labor}</td>
-              <td>${r.estado}</td>
-              <td>${r.observacion}</td>
-              <td>${r.guardia}</td>
-              <td>${r.fecha}</td>
-            </tr>`;
-          }
-      
-        });
-    
-      html += "</table>";
-      document.getElementById("tablaResumen").innerHTML = html;
-    }
+    const registros = JSON.parse(localStorage.getItem("data") || "[]");
+  
+    const guardiaFiltro = document.getElementById("filtroGuardia")?.value || "";
+    const fechaFiltro = document.getElementById("filtroFecha")?.value || "";
+  
+    let html = "<table border='1' style='width:100%; font-size:12px'>";
+    html += "<tr><th>Equipo</th><th>Labor</th><th>Estado</th><th>Obs</th><th>Guardia</th><th>Fecha</th></tr>";
+  
+    registros.forEach(r => {
+  
+      let fechaISO = "";
+  
+      if (r.fecha) {
+        const partes = r.fecha.split(" ")[0].split("/");
+        fechaISO = `${partes[2]}-${partes[1].padStart(2,"0")}-${partes[0].padStart(2,"0")}`;
+      }
+  
+      if (
+        (guardiaFiltro === "" || r.guardia === guardiaFiltro) &&
+        (fechaFiltro === "" || fechaISO === fechaFiltro)
+      ) {
+        html += `<tr>
+          <td>${r.equipo}</td>
+          <td>${r.labor}</td>
+          <td>${r.estado}</td>
+          <td>${r.observacion}</td>
+        </tr>`;
+      }
+  
+    });
+  
+    html += "</table>";
+    document.getElementById("tablaResumen").innerHTML = html;
+  }
 
 
   window.addEventListener("online", () => {
