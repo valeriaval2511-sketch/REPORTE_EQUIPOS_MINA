@@ -220,6 +220,15 @@
         <option value="B">B</option>
         <option value="C">C</option>
       </select>
+      <label>Filtrar por Estado</label>
+      <select id="filtroEstado">
+        <option value="">Todos</option>
+        <option value="Operativo">Operativo</option>
+        <option value="Inoperativo">Inoperativo</option>
+        <option value="Mantenimiento correctivo">Mantenimiento correctivo</option>
+        <option value="Mantenimiento preventivo">Mantenimiento preventivo</option>
+        <option value="Stand By">Stand By</option>
+      </select>
       <label>Filtrar por Fecha</label>
       <input type="date" id="filtroFecha">
       
@@ -311,12 +320,20 @@
     const guardia = document.getElementById("guardia").value;
     const turno = document.getElementById("turno").value;
     const observacion = document.getElementById("obs").value.trim();
-    if (!dni || !equipo || !labor || !guardia) {
-      mostrarMensaje("Completar dni, equipo, labor y guardia.");
+    const file = document.getElementById("foto").files[0];
+  
+    let faltantes = [];
+    if (!dni) faltantes.push("DNI");
+    if (!equipo) faltantes.push("Equipo");
+    if (!labor) faltantes.push("Labor");
+    if (!guardia) faltantes.push("Guardia");
+  
+    if (faltantes.length > 0) {
+      mostrarMensaje("Falta: " + faltantes.join(", "));
       return;
     }
-
-    const data = {
+  
+    let data = {
       fecha: obtenerFechaHoraPeru(),
       tipo: tipo || "Sin definir",
       dni,
@@ -327,17 +344,30 @@
       turno,
       observacion
     };
-
-    const registros = JSON.parse(localStorage.getItem("data") || "[]");
-    document.getElementById("contador").textContent =
-      "Pendientes por sincronizar: " + (registros ? registros.length : 0);
-    registros.push(data);
-    localStorage.setItem("data", JSON.stringify(registros));
-
-    mostrarMensaje("Registro guardado offline.");
-    actualizarContador();
-    limpiarFormulario();
-    mostrarTabla();
+  
+    const guardarLocal = (dataFinal) => {
+      const registros = JSON.parse(localStorage.getItem("data") || "[]");
+      registros.push(dataFinal);
+      localStorage.setItem("data", JSON.stringify(registros));
+  
+      mostrarMensaje("Guardado offline.");
+      actualizarContador();
+      limpiarFormulario();
+  
+      document.getElementById("foto").value = ""; // 👈 BORRA FOTO
+      mostrarTabla();
+    };
+  
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function () {
+        data.foto = reader.result;
+        guardarLocal(data);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      guardarLocal(data);
+    }
   }
 
   async function sincronizar() {
@@ -394,30 +424,35 @@
   function mostrarTabla() {
     const registros = JSON.parse(localStorage.getItem("data") || "[]");
   
-    const guardiaFiltro = document.getElementById("filtroGuardia")?.value || "";
-    const fechaFiltro = document.getElementById("filtroFecha")?.value || "";
+    const guardiaFiltro = document.getElementById("filtroGuardia").value;
+    const fechaFiltro = document.getElementById("filtroFecha").value;
+    const estadoFiltro = document.getElementById("filtroEstado").value;
   
     let html = "<table border='1' style='width:100%; font-size:12px'>";
     html += "<tr><th>Equipo</th><th>Labor</th><th>Estado</th><th>Obs</th><th>Guardia</th><th>Fecha</th></tr>";
   
     registros.forEach(r => {
   
-      let fechaISO = "";
+      let fechaOK = true;
   
-      if (r.fecha) {
+      if (fechaFiltro) {
         const partes = r.fecha.split(" ")[0].split("/");
-        fechaISO = `${partes[2]}-${partes[1].padStart(2,"0")}-${partes[0].padStart(2,"0")}`;
+        const fechaISO = `${partes[2]}-${partes[1].padStart(2,"0")}-${partes[0].padStart(2,"0")}`;
+        fechaOK = fechaISO === fechaFiltro;
       }
   
       if (
         (guardiaFiltro === "" || r.guardia === guardiaFiltro) &&
-        (fechaFiltro === "" || fechaISO === fechaFiltro)
+        fechaOK &&
+        (estadoFiltro === "" || r.estado === estadoFiltro)
       ) {
         html += `<tr>
           <td>${r.equipo}</td>
           <td>${r.labor}</td>
           <td>${r.estado}</td>
           <td>${r.observacion}</td>
+          <td>${r.guardia}</td>
+          <td>${r.fecha}</td>
         </tr>`;
       }
   
@@ -436,6 +471,7 @@
 
   document.getElementById("filtroGuardia").addEventListener("change", mostrarTabla);
   document.getElementById("filtroFecha").addEventListener("change", mostrarTabla);
+  document.getElementById("filtroEstado").addEventListener("change", mostrarTabla);
   
   window.addEventListener("offline", actualizarConexion);
 
