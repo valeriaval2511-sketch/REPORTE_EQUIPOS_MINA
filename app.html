@@ -306,6 +306,8 @@
     };
 
     const registros = JSON.parse(localStorage.getItem("data") || "[]");
+    document.getElementById("contador").textContent =
+      "Pendientes por sincronizar: " + (registros ? registros.length : 0);
     registros.push(data);
     localStorage.setItem("data", JSON.stringify(registros));
 
@@ -348,8 +350,8 @@
     body: JSON.stringify(r)
   });
 }
-      localStorage.setItem("data", "[]");
-      actualizarContador();
+      localStorage.removeItem("data"); // ← más limpio que poner "[]"
+      actualizarContador(); // ← recalcula desde cero
       mostrarMensaje(`Sincronización completa ✅ (${registros.length})`);
     } catch (error) {
       console.error(error);
