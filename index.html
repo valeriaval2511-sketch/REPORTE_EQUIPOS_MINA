@@ -257,6 +257,7 @@
       <div class="small">Turno: Día = 7am a 7pm, Noche = 7pm a 7am.</div>
 
 <script>
+  console.log("SCRIPT INICIÓ");
   const URL = "https://script.google.com/macros/s/AKfycbzBbCL4vE_c_wqiZVi6euuQ97_1JdLTeR2Y32mqmGRBG6QH8iDiyd0NTtRUMcS6kfyv4A/exec";
   let sincronizando = false;
 
@@ -401,6 +402,7 @@
   }
 
   async function sincronizar() {
+    console.log("ENTRÓ A SINCRONIZAR");
     if (sincronizando) {
       mostrarMensaje("Ya se está sincronizando...");
       return;
