@@ -582,7 +582,10 @@
 
   actualizarTurno();
   actualizarContador();
-  actualizarConexion();
+  window.addEventListener("load", () => {
+    actualizarConexion();
+    setInterval(actualizarConexion, 10000); // cada 10s
+  });
  
 </script>
 </body>
