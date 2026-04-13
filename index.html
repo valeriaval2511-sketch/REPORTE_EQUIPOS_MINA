@@ -405,33 +405,23 @@
   }
 
   async function sincronizar() {
-    console.log("ENTRÓ A SINCRONIZAR");
-  
-    const registros = JSON.parse(localStorage.getItem("data") || "[]");
-  
-    if (registros.length === 0) {
-      mostrarMensaje("No hay registros pendientes.");
-      return;
-    }
-  
     try {
-      for (const r of registros) {
-        await fetch(URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "text/plain"
-          },
-          body: JSON.stringify(r)
-        });
-      }
+      const res = await fetch(URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "text/plain"
+        },
+        body: JSON.stringify({
+          prueba: "hola",
+          equipo: "TEST"
+        })
+      });
   
-      localStorage.removeItem("data");
-      mostrarMensaje("Sincronizado correctamente ✅");
-      actualizarContador();
+      const txt = await res.text();
+      alert("RESPUESTA: " + txt);
   
-    } catch (error) {
-      console.error(error);
-      mostrarMensaje("Error al sincronizar");
+    } catch (err) {
+      alert("ERROR: " + err);
     }
   }
     function mostrarTabla() {
