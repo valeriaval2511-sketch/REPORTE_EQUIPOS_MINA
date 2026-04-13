@@ -310,27 +310,11 @@
       "Pendientes por sincronizar: " + registros.length;
   }
 
-  async function actualizarConexion() {
+  function actualizarConexion() {
     const el = document.getElementById("estadoConexion");
-  
-    try {
-      const res = await fetch(URL, { method: "GET" });
-  
-      const txt = await res.text();
-  
-      if (txt === "OK") {
-        el.textContent = "Conectado al servidor";
-        el.style.background = "#dcfce7";
-        el.style.color = "#166534";
-      } else {
-        throw new Error();
-      }
-  
-    } catch (error) {
-      el.textContent = "Sin conexión al servidor";
-      el.style.background = "#fee2e2";
-      el.style.color = "#991b1b";
-    }
+    el.textContent = "Modo sin verificación";
+    el.style.background = "#e8f0fe";
+    el.style.color = "#1f6feb";
   }
 
   window.addEventListener("online", actualizarConexion);
