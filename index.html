@@ -261,7 +261,7 @@
 
 <script>
   console.log("SCRIPT INICIÓ");
-  const URL = "https://script.google.com/macros/s/AKfycbzuzsDZrrYtm4qos-6jSrl761ex4IvcvNAal49N69R1bOnwmOzY6oB-s2ZFZ8plh0a3/exec";
+  const URL = "https://script.google.com/macros/s/AKfycbxGeuBbWjs5TOjhXjSELEZY-4ZddavWPuiLCbgeIMgoSUjjafqI3G4uulaQM6iVzSFxSA/exec";
   let sincronizando = false;
 
   function obtenerPartesPeru() {
@@ -314,12 +314,11 @@
     const el = document.getElementById("estadoConexion");
   
     try {
-      const res = await fetch(URL, { 
-        method: "GET",
-        cache: "no-store"
-      });
+      const res = await fetch(URL, { method: "GET" });
   
-      if (res.ok) {
+      const txt = await res.text();
+  
+      if (txt === "OK") {
         el.textContent = "Conectado al servidor";
         el.style.background = "#dcfce7";
         el.style.color = "#166534";
