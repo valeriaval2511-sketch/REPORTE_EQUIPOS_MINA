@@ -1,7 +1,7 @@
 {
   "name": "Reporte Mina",
   "short_name": "Reporte Mina",
-  "start_url": "./app.html",
+  "start_url": "/REPORTE_EQUIPOS_MINA/",
   "display": "standalone",
   "background_color": "#f4f6f8",
   "theme_color": "#1f6feb",
