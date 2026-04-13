@@ -405,26 +405,6 @@
   }
 
   async function sincronizar() {
-    try {
-      const res = await fetch(URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "text/plain"
-        },
-        body: JSON.stringify({
-          prueba: "hola",
-          equipo: "TEST"
-        })
-      });
-  
-      const txt = await res.text();
-      alert("RESPUESTA: " + txt);
-  
-    } catch (err) {
-      alert("ERROR: " + err);
-    }
-  }
-  async function sincronizar() {
     const registros = JSON.parse(localStorage.getItem("data") || "[]");
   
     if (registros.length === 0) {
@@ -437,12 +417,15 @@
   
         console.log("ENVIANDO:", r);
   
+        const copia = { ...r };
+        delete copia.foto; // 🔥 aquí quitamos la foto
+  
         await fetch(URL, {
           method: "POST",
           headers: {
             "Content-Type": "text/plain"
           },
-          body: JSON.stringify(r)
+          body: JSON.stringify(copia)
         });
       }
   
