@@ -261,7 +261,7 @@
 
 <script>
   console.log("SCRIPT INICIÓ");
-  const URL = "https://script.google.com/macros/s/AKfycby8a_iFTQZnt9OIopgZ8Y6XIXKxlow3MAkh6Dj_tH214txROWimauuUDY4DgClLvMtLXQ/exec";
+  const URL = "https://script.google.com/macros/s/AKfycbzT7ec5RImv99qUCUMUV6Fj0Lz1-ELT0F9-pu8C8v2oiu0r6OIXkxoc34V6RgAF0hQ7fg/exec";
   let sincronizando = false;
 
   function obtenerPartesPeru() {
@@ -440,7 +440,7 @@
               "Content-Type": "text/plain"
             },
             body: JSON.stringify({
-              tipo: "foto",
+              tipo_envio: "foto",
               equipo: r.equipo,
               foto: foto
             })
@@ -536,7 +536,7 @@
         const ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0, width, height);
   
-        const compressed = canvas.toDataURL("image/jpeg", 0.7);
+        const compressed = canvas.toDataURL("image/jpeg", 0.2);
   
         callback(compressed);
       };
