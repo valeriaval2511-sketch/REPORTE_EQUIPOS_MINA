@@ -424,7 +424,38 @@
       alert("ERROR: " + err);
     }
   }
-    function mostrarTabla() {
+  async function sincronizar() {
+    const registros = JSON.parse(localStorage.getItem("data") || "[]");
+  
+    if (registros.length === 0) {
+      mostrarMensaje("No hay registros pendientes.");
+      return;
+    }
+  
+    try {
+      for (const r of registros) {
+  
+        console.log("ENVIANDO:", r);
+  
+        await fetch(URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/plain"
+          },
+          body: JSON.stringify(r)
+        });
+      }
+  
+      localStorage.removeItem("data");
+      mostrarMensaje("Sincronizado correctamente ✅");
+      actualizarContador();
+  
+    } catch (error) {
+      console.error(error);
+      mostrarMensaje("Error al sincronizar");
+    }
+  }
+  function mostrarTabla() {
     const registros = JSON.parse(localStorage.getItem("data") || "[]");
   
     const guardiaFiltro = document.getElementById("filtroGuardia").value;
