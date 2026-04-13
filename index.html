@@ -309,11 +309,11 @@
     const el = document.getElementById("estadoConexion");
   
     try {
-      const res = await fetch(URL, { 
-        method: "GET",
-        cache: "no-store"
-      });
-  
+      const res = await fetch(URL + "?ping=1", { 
+      method: "GET",
+      cache: "no-store",
+      mode: "no-cors"
+    });
       if (res.ok) {
         el.textContent = "Conectado al servidor";
         el.style.background = "#dcfce7";
