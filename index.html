@@ -133,6 +133,7 @@
   </style>
 </head>
 <body>
+  <button onclick="alert('SI FUNCIONA JS')">Probar JS</button>
   <div class="container">
     <div class="card">
       <h1>Reporte de Equipos</h1>
@@ -424,12 +425,9 @@
         if (!r.tipo) r.tipo = "Sin definir";
   
         try {
-          await fetch(URL, {
-            method: "POST",
-            headers: {
-              "Content-Type": "text/plain"
-            },
-            body: JSON.stringify(r)
+          console.log("URL que estoy usando:", URL);
+          await fetch(URL + "?prueba=1", {
+            method: "GET"
           });
   
           enviados++;
