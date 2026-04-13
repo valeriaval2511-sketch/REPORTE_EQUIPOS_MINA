@@ -306,17 +306,20 @@
   }
 
   function actualizarConexion() {
-    const el = document.getElementById("estadoConexion");
-    if (navigator.onLine) {
+  const el = document.getElementById("estadoConexion");
+
+  fetch("https://www.google.com", { mode: "no-cors" })
+    .then(() => {
       el.textContent = "Con conexión";
       el.style.background = "#dcfce7";
       el.style.color = "#166534";
-    } else {
+    })
+    .catch(() => {
       el.textContent = "Sin conexión";
       el.style.background = "#fee2e2";
       el.style.color = "#991b1b";
-    }
-  }
+    });
+}
 
   function limpiarFormulario() {
     document.getElementById("dni").value = "";
