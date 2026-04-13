@@ -319,6 +319,7 @@
 
   window.addEventListener("online", actualizarConexion);
   window.addEventListener("offline", actualizarConexion);
+  setInterval(actualizarConexion, 10000);
 
   function limpiarFormulario() {
     document.getElementById("dni").value = "";
