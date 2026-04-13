@@ -433,20 +433,21 @@
         });
       
         // enviar foto (APARTE)
-        if (foto) {
-          console.log("ENVIANDO FOTO:", foto);
-          await fetch(URL, {
-            method: "POST",
-            headers: {
-              "Content-Type": "text/plain"
-            },
-            body: JSON.stringify({
-              tipo_envio: "foto",
-              equipo: r.equipo,
-              foto: foto
-            })
-          });
-        }
+        if (foto && foto.length > 0) {
+      
+        console.log("INTENTANDO ENVIAR FOTO");
+      
+        await fetch(URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/plain"
+          },
+          body: JSON.stringify({
+            tipo_envio: "foto",
+            equipo: r.equipo,
+            foto: foto
+          })
+        });
       }
   
       localStorage.removeItem("data");
