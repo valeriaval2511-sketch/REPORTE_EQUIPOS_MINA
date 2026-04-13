@@ -404,69 +404,53 @@
       mostrarMensaje("Ya se está sincronizando...");
       return;
     }
-        const registros = JSON.parse(localStorage.getItem("data") || "[]");
-
-            if (registros.length === 0) {
-              mostrarMensaje("No hay registros pendientes.");
-              return;
-            }
-        
-            if (!navigator.onLine) {
-              mostrarMensaje("No hay internet. Los datos siguen guardados en el equipo.");
-              return;
-            }
-        
-            const btn = document.querySelector(".btn-sync");
-            sincronizando = true;
-            btn.disabled = true;
-            btn.textContent = "Sincronizando...";
-        
-            try {
-              for (const r of registros) {
-
-                if (!r.tipo) {
-                  r.tipo = "Sin definir";
-                }
-                  body: JSON.stringify(r)
-                });
-              }
-
-            try {
-              let enviados = 0;
-            
-              for (const r of registros) {
-                try {
-                  const res = await fetch(URL, {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "text/plain"
-                    },
-                    body: JSON.stringify(r)
-                  });
-            
-                  if (res.ok) {
-                    enviados++;
-                  }
-            
-                } catch (err) {
-                  console.log("Error en un registro");
-                }
-              }
-            
-              if (enviados === registros.length && registros.length > 0) {
-                localStorage.removeItem("data"); // SOLO SI TODO SE ENVÍA
-                actualizarContador();
-                mostrarMensaje("Sincronizado correctamente");
-              } else {
-                mostrarMensaje("Datos guardados, se enviarán luego");
-              }
-    
-    } catch (error) {
-      console.log(error);
-      mostrarMensaje("Datos guardados, se enviarán luego");
+  
+    const registros = JSON.parse(localStorage.getItem("data") || "[]");
+  
+    if (registros.length === 0) {
+      mostrarMensaje("No hay registros pendientes.");
+      return;
     }
-      actualizarContador(); // ← recalcula desde cero
-      mostrarMensaje(`Sincronización completa ✅ (${registros.length})`);
+  
+    if (!navigator.onLine) {
+      mostrarMensaje("No hay internet.");
+      return;
+    }
+  
+    const btn = document.querySelector(".btn-sync");
+    sincronizando = true;
+    btn.disabled = true;
+    btn.textContent = "Sincronizando...";
+  
+    try {
+      let enviados = 0;
+  
+      for (const r of registros) {
+        if (!r.tipo) r.tipo = "Sin definir";
+  
+        try {
+          const res = await fetch(URL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "text/plain"
+            },
+            body: JSON.stringify(r)
+          });
+  
+          if (res.ok) enviados++;
+  
+        } catch (err) {
+          console.log("Error en un registro");
+        }
+      }
+  
+      if (enviados === registros.length) {
+        localStorage.removeItem("data");
+        mostrarMensaje("Sincronizado correctamente ✅");
+      } else {
+        mostrarMensaje("Algunos datos no se enviaron");
+      }
+  
     } catch (error) {
       console.error(error);
       mostrarMensaje("Error de conexión");
@@ -474,6 +458,7 @@
       sincronizando = false;
       btn.disabled = false;
       btn.textContent = "Sincronizar";
+      actualizarContador();
     }
   }
   
