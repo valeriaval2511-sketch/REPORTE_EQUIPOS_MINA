@@ -402,62 +402,9 @@
 
   }
 
-  async function sincronizar() {
-    console.log("ENTRÓ A SINCRONIZAR");
-    if (sincronizando) {
-      mostrarMensaje("Ya se está sincronizando...");
-      return;
-    }
-  
-    const registros = JSON.parse(localStorage.getItem("data") || "[]");
-  
-    if (registros.length === 0) {
-      mostrarMensaje("No hay registros pendientes.");
-      return;
-    }
-  
-    const btn = document.querySelector(".btn-sync");
-    sincronizando = true;
-    btn.disabled = true;
-    btn.textContent = "Sincronizando...";
-  
-    try {
-      let enviados = 0;
-  
-      for (const r of registros) {
-        if (!r.tipo) r.tipo = "Sin definir";
-  
-        try {
-          console.log("URL que estoy usando:", URL);
-          await fetch(URL + "?prueba=1", {
-            method: "GET"
-          });
-  
-          enviados++;
-  
-        } catch (err) {
-          console.log("Error en un registro");
-        }
-      }
-  
-      if (enviados === registros.length) {
-        localStorage.removeItem("data");
-        mostrarMensaje("Sincronizado correctamente ✅");
-      } else {
-        mostrarMensaje("Algunos datos no se enviaron");
-      }
-  
-    } catch (error) {
-      console.error(error);
-      mostrarMensaje("Error de conexión");
-    } finally {
-      sincronizando = false;
-      btn.disabled = false;
-      btn.textContent = "Sincronizar";
-      actualizarContador();
-    }
+ async function sincronizar() {
+    alert("SI ENTRA A ESTA FUNCION");
   }
-  
   function mostrarTabla() {
     const registros = JSON.parse(localStorage.getItem("data") || "[]");
   
