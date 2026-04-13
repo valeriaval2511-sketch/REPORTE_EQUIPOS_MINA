@@ -304,20 +304,23 @@
     document.getElementById("contador").textContent =
       "Pendientes por sincronizar: " + registros.length;
   }
-    async function actualizarConexion() {
+
+  async function actualizarConexion() {
     const el = document.getElementById("estadoConexion");
   
     try {
-      await fetch(URL + "?ping=1", { 
+      const res = await fetch(URL + "?ping=1", { 
         method: "GET",
-        cache: "no-store",
-        mode: "no-cors"
+        cache: "no-store"
       });
   
-      // SI NO LANZA ERROR = HAY CONEXIÓN
-      el.textContent = "Conectado al servidor";
-      el.style.background = "#dcfce7";
-      el.style.color = "#166534";
+      if (res.ok) {
+        el.textContent = "Conectado al servidor";
+        el.style.background = "#dcfce7";
+        el.style.color = "#166534";
+      } else {
+        throw new Error();
+      }
   
     } catch (error) {
       el.textContent = "Sin conexión al servidor";
