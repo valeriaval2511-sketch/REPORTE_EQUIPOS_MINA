@@ -213,6 +213,22 @@
       </div>
 
       <hr>
+
+      <h3 style="margin-top:10px;">TABLA RESUMEN</h3>
+      
+      <button onclick="verTabla()" style="
+        margin-bottom:10px;
+        background:#1f6feb;
+        color:white;
+        border:none;
+        padding:10px;
+        border-radius:8px;
+        font-weight:bold;
+      ">
+        MOSTRAR TABLA
+      </button>
+
+      <hr>
       <label>Filtrar por Guardia</label>
       <select id="filtroGuardia">
         <option value="">Todas</option>
@@ -232,7 +248,7 @@
       <label>Filtrar por Fecha</label>
       <input type="date" id="filtroFecha">
       
-      <div id="tablaResumen"></div>
+      <div id="tablaResumen" style="display:none;"></div>
       <div class="status-box" id="mensaje">Listo para registrar.</div>
       <div class="count" id="contador"></div>
       <div class="small">Turno: Día = 7am a 7pm, Noche = 7pm a 7am.</div>
@@ -323,11 +339,14 @@
     const file = document.getElementById("foto").files[0];
   
     let faltantes = [];
+
     if (!dni) faltantes.push("DNI");
     if (!equipo) faltantes.push("Equipo");
     if (!labor) faltantes.push("Labor");
     if (!guardia) faltantes.push("Guardia");
-  
+    if (!file) faltantes.push("Foto");
+    if (!observacion.trim()) faltantes.push("Observación");
+    
     if (faltantes.length > 0) {
       mostrarMensaje("Falta: " + faltantes.join(", "));
       return;
@@ -358,16 +377,18 @@
       mostrarTabla();
     };
   
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function () {
-        data.foto = reader.result;
-        guardarLocal(data);
-      };
-      reader.readAsDataURL(file);
-    } else {
+    const reader = new FileReader();
+
+    reader.onload = function () {
+      data.foto = reader.result;
       guardarLocal(data);
-    }
+    };
+    
+    reader.onerror = function () {
+      guardarLocal(data); // por seguridad
+    };
+    
+    reader.readAsDataURL(file);
   }
 
   async function sincronizar() {
@@ -462,6 +483,11 @@
     document.getElementById("tablaResumen").innerHTML = html;
   }
 
+  function verTabla() {
+    document.getElementById("tablaResumen").style.display = "block";
+    mostrarTabla();
+  }
+
 
   window.addEventListener("online", () => {
     actualizarConexion();
@@ -478,7 +504,6 @@
   actualizarTurno();
   actualizarContador();
   actualizarConexion();
-  mostrarTabla();
  
 </script>
 </body>
