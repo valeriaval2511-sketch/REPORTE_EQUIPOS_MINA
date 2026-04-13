@@ -256,7 +256,7 @@
       <div class="small">Turno: Día = 7am a 7pm, Noche = 7pm a 7am.</div>
 
 <script>
-  const URL = "https://script.google.com/macros/s/AKfycbxrKSsNNUfIje-WDq7aV6Wn233GvsRGsm5rUWGTOWWdqZyAqY-ord-UPlviG20fbmZ4Pg/exec";
+  const URL = "https://script.google.com/macros/s/AKfycbzBbCL4vE_c_wqiZVi6euuQ97_1JdLTeR2Y32mqmGRBG6QH8iDiyd0NTtRUMcS6kfyv4A/exec";
   let sincronizando = false;
 
   function obtenerPartesPeru() {
@@ -412,11 +412,6 @@
       return;
     }
   
-    if (!navigator.onLine) {
-      mostrarMensaje("No hay internet.");
-      return;
-    }
-  
     const btn = document.querySelector(".btn-sync");
     sincronizando = true;
     btn.disabled = true;
@@ -429,14 +424,14 @@
         if (!r.tipo) r.tipo = "Sin definir";
   
         try {
-          const res = await fetch(URL, {
+          await fetch(URL, {
             method: "POST",
             headers: {
               "Content-Type": "text/plain"
             },
             body: JSON.stringify(r)
           });
-            
+  
           enviados++;
   
         } catch (err) {
