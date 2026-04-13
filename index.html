@@ -413,16 +413,44 @@
                 if (!r.tipo) {
                   r.tipo = "Sin definir";
                 }
-              
-                await fetch(URL, {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "text/plain"
-                  },
                   body: JSON.stringify(r)
                 });
               }
-      localStorage.removeItem("data"); // ← más limpio que poner "[]"
+
+            try {
+              let enviados = 0;
+            
+              for (const r of registros) {
+                try {
+                  const res = await fetch(URL, {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "text/plain"
+                    },
+                    body: JSON.stringify(r)
+                  });
+            
+                  if (res.ok) {
+                    enviados++;
+                  }
+            
+                } catch (err) {
+                  console.log("Error en un registro");
+                }
+              }
+            
+              if (enviados === registros.length && registros.length > 0) {
+                localStorage.removeItem("data"); // SOLO SI TODO SE ENVÍA
+                actualizarContador();
+                mostrarMensaje("Sincronizado correctamente");
+              } else {
+                mostrarMensaje("Datos guardados, se enviarán luego");
+              }
+    
+    } catch (error) {
+      console.log(error);
+      mostrarMensaje("Datos guardados, se enviarán luego");
+    }
       actualizarContador(); // ← recalcula desde cero
       mostrarMensaje(`Sincronización completa ✅ (${registros.length})`);
     } catch (error) {
