@@ -133,7 +133,7 @@
   <div class="container">
     <div class="card">
       <h1>Reporte de Equipos</h1>
-      <p class="sub">REPORTE DE UBICACIÓN DE EQUIPOS</p>
+      <p class="sub">Ubicación de Equipos</p>
       <div class="pill" id="estadoConexion">Verificando conexión...</div>
 
       <label for="tipo">Tipo de registro</label>
@@ -214,21 +214,8 @@
 
       <hr>
 
-      <h3 style="margin-top:10px;">TABLA RESUMEN</h3>
-      
-      <button onclick="verTabla()" style="
-        margin-bottom:10px;
-        background:#1f6feb;
-        color:white;
-        border:none;
-        padding:10px;
-        border-radius:8px;
-        font-weight:bold;
-      ">
-        MOSTRAR TABLA
-      </button>
+      <h3 style="margin-top:10px;">TABLA DE RESUMEN</h3>
 
-      <hr>
       <label>Filtrar por Guardia</label>
       <select id="filtroGuardia">
         <option value="">Todas</option>
@@ -247,6 +234,18 @@
       </select>
       <label>Filtrar por Fecha</label>
       <input type="date" id="filtroFecha">
+
+      <button onclick="toggleTabla()" id="btnTabla" style="
+        margin-bottom:10px;
+        background:#1f6feb;
+        color:white;
+        border:none;
+        padding:10px;
+        border-radius:8px;
+        font-weight:bold;
+      ">
+        Mostrar Tabla
+      </button>
       
       <div id="tablaResumen" style="display:none;"></div>
       <div class="status-box" id="mensaje">Listo para registrar.</div>
@@ -483,9 +482,18 @@
     document.getElementById("tablaResumen").innerHTML = html;
   }
 
-  function verTabla() {
-    document.getElementById("tablaResumen").style.display = "block";
-    mostrarTabla();
+  function toggleTabla() {
+    const tabla = document.getElementById("tablaResumen");
+    const btn = document.getElementById("btnTabla");
+  
+    if (tabla.style.display === "none") {
+      tabla.style.display = "block";
+      mostrarTabla();
+      btn.textContent = "Ocultar Tabla";
+    } else {
+      tabla.style.display = "none";
+      btn.textContent = "Mostrar Tabla";
+    }
   }
 
 
