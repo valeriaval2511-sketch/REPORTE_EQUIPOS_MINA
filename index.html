@@ -305,15 +305,25 @@
       "Pendientes por sincronizar: " + registros.length;
   }
 
-  function actualizarConexion() {
+  async function actualizarConexion() {
     const el = document.getElementById("estadoConexion");
   
-    if (navigator.onLine) {
-      el.textContent = "Con conexión";
-      el.style.background = "#dcfce7";
-      el.style.color = "#166534";
-    } else {
-      el.textContent = "Sin conexión";
+    try {
+      const res = await fetch(URL, { 
+        method: "GET",
+        cache: "no-store"
+      });
+  
+      if (res.ok) {
+        el.textContent = "Conectado al servidor";
+        el.style.background = "#dcfce7";
+        el.style.color = "#166534";
+      } else {
+        throw new Error("No responde");
+      }
+  
+    } catch (error) {
+      el.textContent = "Sin conexión al servidor";
       el.style.background = "#fee2e2";
       el.style.color = "#991b1b";
     }
