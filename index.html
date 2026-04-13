@@ -261,7 +261,7 @@
 
 <script>
   console.log("SCRIPT INICIÓ");
-  const URL = "https://script.google.com/macros/s/AKfycbzBbCL4vE_c_wqiZVi6euuQ97_1JdLTeR2Y32mqmGRBG6QH8iDiyd0NTtRUMcS6kfyv4A/exec";
+  const URL = "https://script.google.com/macros/s/AKfycby8a_iFTQZnt9OIopgZ8Y6XIXKxlow3MAkh6Dj_tH214txROWimauuUDY4DgClLvMtLXQ/exec";
   let sincronizando = false;
 
   function obtenerPartesPeru() {
@@ -414,12 +414,16 @@
   
     try {
       for (const r of registros) {
-  
+
         console.log("ENVIANDO:", r);
-  
+      
+        //separar datos y foto
         const copia = { ...r };
-        delete copia.foto; // 🔥 aquí quitamos la foto
-  
+        const foto = r.foto;
+      
+        delete copia.foto;
+      
+        // enviar datos (SIN foto)
         await fetch(URL, {
           method: "POST",
           headers: {
@@ -427,6 +431,21 @@
           },
           body: JSON.stringify(copia)
         });
+      
+        // enviar foto (APARTE)
+        if (foto) {
+          await fetch(URL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "text/plain"
+            },
+            body: JSON.stringify({
+              tipo: "foto",
+              equipo: r.equipo,
+              foto: foto
+            })
+          });
+        }
       }
   
       localStorage.removeItem("data");
