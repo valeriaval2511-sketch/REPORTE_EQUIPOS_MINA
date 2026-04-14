@@ -472,18 +472,28 @@ function actualizarPendientes() {
   document.getElementById("pendientes").textContent = "Pendientes: " + arr.length;
 }
 
-// Cargar listas maestras desde Sheets
 async function cargarListasMaestras() {
   try {
     const res = await fetch(URL + "?listas=1");
     const data = await res.json();
 
-    listasMaestras.dni = Array.isArray(data.dni) ? data.dni : [];
-    listasMaestras.equipos = Array.isArray(data.equipos) ? data.equipos : [];
-    listasMaestras.labores = Array.isArray(data.labores) ? data.labores : [];
+    listasMaestras = data;
+
+    // GUARDAR EN LOCAL
+    localStorage.setItem("listas", JSON.stringify(data));
 
   } catch (err) {
-    console.error("Error cargando listas maestras:", err);
+
+    console.warn("Sin conexión, usando listas guardadas");
+
+    // USAR LISTAS GUARDADAS
+    const local = localStorage.getItem("listas");
+
+    if (local) {
+      listasMaestras = JSON.parse(local);
+    } else {
+      listasMaestras = { dni: [], equipos: [], labores: [] };
+    }
   }
 }
 
