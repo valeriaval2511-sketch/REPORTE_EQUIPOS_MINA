@@ -125,6 +125,7 @@ button{
   color:#fff;
   margin-top:10px;
   width:100%;
+  display:block;
 }
 
 #mensaje{
@@ -138,6 +139,7 @@ button{
 
 .table-wrap{
   margin-top:10px;
+  width:100%;
   overflow-x:auto;
   border-radius:12px;
 }
@@ -256,6 +258,13 @@ tr:hover{
     font-size:10px;
   }
 }
+#tablaResumen{
+  width:100%;
+}
+
+#tablaResumen table{
+  width:100% !important;
+}
 </style>
 </head>
 
@@ -359,8 +368,6 @@ tr:hover{
     </div>
 
     <button type="button" class="btn-tabla" onclick="cargarTablaExcel()">Actualizar tabla</button>
-
-    <div class="small-note">La tabla usa los datos reales del Excel.</div>
 
     <div class="table-wrap">
       <div id="tablaResumen"></div>
