@@ -409,57 +409,35 @@ function obtenerFecha() {
 }
 
 // Guardia automática
-  
+
 function obtenerGuardia() {
 
   const ahora = new Date();
-
   const hora = ahora.getHours();
+
   const esDia = hora >= 7 && hora < 19;
 
-  // Ajuste: antes de 7am cuenta como día anterior
-  let fecha = new Date(ahora);
+  // Ajuste operativo (madrugada cuenta como día anterior)
+  const fecha = new Date(ahora);
   if (hora < 7) {
     fecha.setDate(fecha.getDate() - 1);
   }
 
-  // Base
-  const inicio = new Date("2026-04-15T07:00:00");
+  // Base: 15 abril 2026 = B día
+  const base = new Date("2026-04-15T07:00:00");
 
-  const diffDias = Math.floor((fecha - inicio) / (1000 * 60 * 60 * 24));
+  const diffDias = Math.floor((fecha - base) / (1000 * 60 * 60 * 24));
 
-  // 🔥 TRAMOS REALES
+  // ciclo de 21 días
+  const ciclo = ((diffDias % 21) + 21) % 21;
 
-  // 15–21 abril
-  if (diffDias >= 0 && diffDias <= 6) {
+  if (ciclo < 7) {
     return esDia ? "B" : "A";
-  }
-
-  // 22–28 abril
-  if (diffDias >= 7 && diffDias <= 13) {
+  } else if (ciclo < 14) {
     return esDia ? "C" : "B";
-  }
-
-  // 29 abril
-  if (diffDias === 14) {
+  } else {
     return esDia ? "A" : "C";
   }
-
-  // 30 abril → reinicio ciclo
-  if (diffDias >= 15) {
-
-    const ciclo = ((diffDias - 15) % 21 + 21) % 21;
-
-    if (ciclo < 7) {
-      return esDia ? "B" : "C";
-    } else if (ciclo < 14) {
-      return esDia ? "A" : "B";
-    } else {
-      return esDia ? "C" : "A";
-    }
-  }
-
-  return "N/A";
 }
 
 // Actualizar guardia visible
