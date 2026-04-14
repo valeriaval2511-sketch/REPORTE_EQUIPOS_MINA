@@ -167,17 +167,56 @@ async function cargarTablaExcel(){
     let g = filtroGuardia.value;
     let e = filtroEstado.value;
 
-    let html = "<table><tr><th>Equipo</th><th>Labor</th><th>Estado</th><th>Obs</th><th>Guardia</th></tr>";
+    let html = `
+    <table style="width:100%; border-collapse:collapse; margin-top:10px;">
+      <tr style="
+        background:#0f5132;
+        color:white;
+        font-family:'Century Gothic';
+        font-weight:bold;
+      ">
+        <th style="padding:8px">Equipo</th>
+        <th style="padding:8px">Labor</th>
+        <th style="padding:8px">Estado</th>
+        <th style="padding:8px">Obs</th>
+        <th style="padding:8px">Guardia</th>
+      </tr>
+    `;
 
     data.slice(1).forEach(r=>{
+
       if((!g || r[6]==g) && (!e || r[5]==e)){
-        html += `<tr>
-          <td>${r[3]}</td>
-          <td>${r[4]}</td>
-          <td>${r[5]}</td>
-          <td>${r[8]}</td>
-          <td>${r[6]}</td>
-        </tr>`;
+
+        let colorEstado = "#fff";
+
+        if(r[5] === "Operativo"){
+          colorEstado = "#198754"; // verde empresa
+        } 
+        else if(r[5] === "Inoperativo"){
+          colorEstado = "#dc3545"; // rojo
+        } 
+        else {
+          colorEstado = "#ffc107"; // amarillo
+        }
+
+        html += `
+        <tr style="font-family:Arial; border-bottom:1px solid #ddd">
+          <td style="padding:6px">${r[3]}</td>
+          <td style="padding:6px">${r[4]}</td>
+          <td style="
+            padding:6px;
+            color:white;
+            font-weight:bold;
+            background:${colorEstado};
+            border-radius:6px;
+            text-align:center;
+          ">
+            ${r[5]}
+          </td>
+          <td style="padding:6px">${r[8]}</td>
+          <td style="padding:6px">${r[6]}</td>
+        </tr>
+        `;
       }
     });
 
