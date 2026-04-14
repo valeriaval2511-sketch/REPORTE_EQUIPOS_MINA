@@ -1,6 +1,6 @@
 {
-  "name": "Reporte Mina",
-  "short_name": "Reporte",
+  "name": "Ubicación de Equipos Mina",
+  "short_name": "Ubicación de Equipos",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#eef2f6",
