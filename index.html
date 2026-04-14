@@ -367,7 +367,7 @@ tr:hover{
 </div>
 
 <script>
-const URL = "https://script.google.com/macros/s/AKfycby2O7-r4QKPwzypuY57nszn8qAiiP2FCPq_S3wc_6Kqs0N2MpLaTV2k9s-4Cdf25BGwKg/exec";
+const URL = "https://script.google.com/macros/s/AKfycbwGotK29_sqYqfVoVMnTm3zpUWyZboRDKxgcRKXOm0YboE4Kf3YFnHeKlnCxKbAaNPtag/exec";
 
 let listasMaestras = {
   dni: [],
@@ -552,6 +552,7 @@ function guardar() {
     fecha: obtenerFecha(),
     tipo: document.getElementById("tipo").value,
     dni: document.getElementById("dni").value.trim(),
+    nombre: document.getElementById("nombre").value.trim(),
     equipo: document.getElementById("equipo").value.trim(),
     labor: document.getElementById("labor").value.trim(),
     estado: document.getElementById("estado").value,
