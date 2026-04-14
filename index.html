@@ -347,10 +347,11 @@ tr:hover{
           <option value="">Todos</option>
           <option value="Operativo">Operativo</option>
           <option value="Inoperativo">Inoperativo</option>
-          <option value="Mantenimiento">Mantenimiento</option>
+          <option value="Mantenimiento preven.">Mantenimiento preven.</option>
+          <option value="Mantenimiento correct.">Mantenimiento correct.</option>
+          <option value="Stand by">Stand by</option>
         </select>
       </div>
-    </div>
 
     <label for="filtroFecha">Filtrar por fecha</label>
     <input type="date" id="filtroFecha" onchange="cargarTablaExcel()">
@@ -699,8 +700,17 @@ async function cargarTablaExcel() {
 
       if ((!g || guardia === g) && (!e || estado === e) && fechaOK) {
         let badgeClass = "badge-mantenimiento";
-        if (estado === "Operativo") badgeClass = "badge-operativo";
-        else if (estado === "Inoperativo") badgeClass = "badge-inoperativo";
+        if (estado === "Operativo") {
+          badgeClass = "badge-operativo";
+        } else if (estado === "Inoperativo") {
+          badgeClass = "badge-inoperativo";
+        } else if (
+          estado === "Mantenimiento preven." ||
+          estado === "Mantenimiento correct." ||
+          estado === "Stand by"
+        ) {
+          badgeClass = "badge-mantenimiento";
+        }
 
         html += `
           <tr>
