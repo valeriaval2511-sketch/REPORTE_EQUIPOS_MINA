@@ -461,8 +461,15 @@ function actualizarEstado(tipo) {
 }
 
 function verificarConexion() {
-  if (navigator.onLine) actualizarEstado("online");
-  else actualizarEstado("offline");
+  const estado = document.getElementById("estadoConexion");
+
+  if (navigator.onLine) {
+    estado.textContent = "Con conexión";
+    estado.className = "estado-box estado-ok";
+  } else {
+    estado.textContent = "Sin conexión";
+    estado.className = "estado-box estado-off";
+  }
 }
 
 // Mensaje
