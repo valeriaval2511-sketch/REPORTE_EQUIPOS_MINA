@@ -29,7 +29,6 @@ body{
   padding:18px;
   border-radius:16px;
   box-shadow:0 8px 20px rgba(0,0,0,0.08);
-  overflow:visible;
 }
 
 h1,h3,label,th{
@@ -40,6 +39,12 @@ h1,h3,label,th{
 h1{
   margin:0 0 4px 0;
   font-size:22px;
+  line-height:1.1;
+}
+
+h3{
+  margin:18px 0 8px 0;
+  font-size:18px;
 }
 
 .estado-box{
@@ -63,18 +68,24 @@ h1{
 
 label{
   margin-top:10px;
+  margin-bottom:6px;
   display:block;
   font-size:13px;
 }
 
 input,select,textarea{
   width:100%;
-  padding:10px;
+  padding:10px 12px;
   border-radius:12px;
   border:1px solid #cfd6dd;
+  font-size:14px;
+  background:#fff;
 }
 
-textarea{height:80px}
+textarea{
+  height:88px;
+  resize:vertical;
+}
 
 .row{
   display:grid;
@@ -90,82 +101,124 @@ textarea{height:80px}
 }
 
 button{
-  padding:11px;
+  padding:11px 12px;
   border:none;
   border-radius:12px;
   font-weight:bold;
-}
-
-.btn-save{background:#2f6edb;color:white}
-.btn-sync{background:#198754;color:white}
-
-/* AUTOCOMPLETE */
-.autocomplete-wrap{
-  position:relative;
-  z-index:999;
-}
-
-.autocomplete-wrap::after{
-  content:"▼";
-  position:absolute;
-  right:12px;
-  top:50%;
-  transform:translateY(-50%);
-  font-size:10px;
-  color:#666;
-}
-
-.autocomplete-list{
-  position:absolute;
-  top:110%;
-  left:0;
-  right:0;
-  background:white;
-  border:1px solid #ccc;
-  border-radius:12px;
-  max-height:180px;
-  overflow-y:auto;
-  z-index:9999;
-  display:none;
-}
-
-.autocomplete-item{
-  padding:10px;
+  font-family:Arial, sans-serif;
   cursor:pointer;
 }
 
-.autocomplete-item:hover{
-  background:#f3f4f6;
-}
-/* AUTOCOMPLETE VISUAL */
-.autocomplete-wrap{
-  position:relative;
-  z-index:999;
+.btn-save{
+  background:#2f6edb;
+  color:#fff;
 }
 
-.autocomplete-wrap::after{
-  content:"▼";
-  position:absolute;
-  right:12px;
-  top:50%;
-  transform:translateY(-50%);
-  font-size:10px;
+.btn-sync{
+  background:#198754;
+  color:#fff;
+}
+
+.btn-tabla{
+  background:#198754;
+  color:#fff;
+  margin-top:10px;
+  width:100%;
+}
+
+#mensaje{
+  margin-top:10px;
+  font-size:13px;
+}
+
+#tablaResumen{
+  margin-top:12px;
+}
+
+.table-wrap{
+  margin-top:10px;
+  overflow-x:auto;
+  border-radius:12px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  background:#fff;
+  font-family:Arial, sans-serif;
+  font-size:12px;
+  table-layout:fixed;
+}
+
+th{
+  background:#198754;
+  color:#fff;
+  padding:9px 6px;
+  white-space:nowrap;
+  text-align:center;
+  font-size:12px;
+}
+
+td{
+  padding:9px 6px;
+  border-bottom:1px solid #e5e7eb;
+  vertical-align:middle;
+  text-align:center;
+  font-size:12px;
+  word-wrap:break-word;
+}
+
+tr:hover{
+  background:#f9fafb;
+}
+
+.badge{
+  display:inline-block;
+  min-width:98px;
+  text-align:center;
+  padding:4px 10px;
+  border-radius:999px;
+  color:#fff;
+  font-weight:bold;
+  font-size:11px;
+  line-height:1.2;
+}
+
+.badge-operativo{
+  background:#198754;
+}
+
+.badge-inoperativo{
+  background:#dc3545;
+}
+
+.badge-mantenimiento{
+  background:#d39e00;
+}
+
+.small-note{
+  font-size:12px;
   color:#666;
-  pointer-events:none;
+  margin-top:6px;
+}
+
+.autocomplete-wrap{
+  position:relative;
 }
 
 .autocomplete-list{
   position:absolute;
-  top:110%;
+  top:100%;
   left:0;
   right:0;
   background:#fff;
   border:1px solid #cfd6dd;
-  border-radius:12px;
+  border-top:none;
+  border-radius:0 0 12px 12px;
   max-height:180px;
   overflow-y:auto;
-  z-index:9999;
-  box-shadow:0 10px 25px rgba(0,0,0,0.15);
+  z-index:20;
+  box-shadow:0 8px 20px rgba(0,0,0,0.08);
   display:none;
 }
 
@@ -176,117 +229,258 @@ button{
   border-bottom:1px solid #f1f5f9;
 }
 
+.autocomplete-item:last-child{
+  border-bottom:none;
+}
+
 .autocomplete-item:hover{
   background:#f3f4f6;
 }
 
-/* IMPORTANTE */
-.card{
-  overflow:visible;
+@media (max-width:480px){
+  .row{
+    grid-template-columns:1fr;
+  }
+
+  table{
+    font-size:11px;
+  }
+
+  th,td{
+    padding:8px 4px;
+    font-size:11px;
+  }
+
+  .badge{
+    min-width:86px;
+    font-size:10px;
+  }
 }
 </style>
-
-  
 </head>
 
 <body>
 <div class="container">
-<div class="card">
+  <div class="card">
 
-<h1>Reporte Equipos</h1>
+    <h1>Reporte Equipos</h1>
+    <div id="estadoConexion" class="estado-box">Verificando...</div>
+    <div id="pendientes" class="pendientes"></div>
 
-<div id="estadoConexion" class="estado-box">Verificando...</div>
-<div id="pendientes" class="pendientes"></div>
+    <label for="tipo">Tipo</label>
+    <select id="tipo">
+      <option value="Entrada">Entrada</option>
+      <option value="Salida">Salida</option>
+    </select>
 
-<label>Tipo</label>
-<select id="tipo">
-<option>Entrada</option>
-<option>Salida</option>
-</select>
+    <div class="row">
+      <div>
+        <label for="guardia">Guardia</label>
+        <input id="guardia" readonly>
+      </div>
+      <div>
+        <label for="labor">Labor</label>
+        <div class="autocomplete-wrap">
+          <input id="labor" autocomplete="off">
+          <div id="listaLabor" class="autocomplete-list"></div>
+        </div>
+      </div>
+    </div>
 
-<div class="row">
-<div>
-<label>Guardia</label>
-<input id="guardia" readonly>
-</div>
+    <div class="row">
+      <div>
+        <label for="equipo">Equipo</label>
+        <div class="autocomplete-wrap">
+          <input id="equipo" autocomplete="off">
+          <div id="listaEquipo" class="autocomplete-list"></div>
+        </div>
+      </div>
+      <div>
+        <label for="estado">Estado</label>
+        <select id="estado">
+          <option value="Operativo">Operativo</option>
+          <option value="Inoperativo">Inoperativo</option>
+          <option value="Mantenimiento">Mantenimiento</option>
+        </select>
+      </div>
+    </div>
 
-<div>
-<label>Labor</label>
-<div class="autocomplete-wrap">
-  <input id="labor" placeholder="Buscar labor..." autocomplete="off">
-  <div id="listaLabor" class="autocomplete-list"></div>
-</div>
-</div>
-</div>
+    <label for="dni">DNI</label>
+    <div class="autocomplete-wrap">
+      <input id="dni" autocomplete="off">
+      <div id="listaDni" class="autocomplete-list"></div>
+    </div>
 
-<div class="row">
-<div>
-<label>Equipo</label>
-<div class="autocomplete-wrap">
-  <input id="equipo" placeholder="Buscar equipo..." autocomplete="off">
-  <div id="listaEquipo" class="autocomplete-list"></div>
-</div>
-</div>
+    <label for="obs">Observación</label>
+    <textarea id="obs"></textarea>
 
-<div>
-<label>Estado</label>
-<select id="estado">
-<option>Operativo</option>
-<option>Inoperativo</option>
-<option>Mantenimiento</option>
-</select>
-</div>
-</div>
+    <div class="btns">
+      <button class="btn-save" onclick="guardar()">Guardar</button>
+      <button id="btnSync" class="btn-sync" onclick="sincronizar()">Sincronizar</button>
+    </div>
 
-<label>DNI</label>
-<div class="autocomplete-wrap">
-  <input id="dni" placeholder="Buscar DNI..." autocomplete="off">
-  <div id="listaDni" class="autocomplete-list"></div>
-</div>
+    <div id="mensaje"></div>
 
-<label>Observación</label>
-<textarea id="obs"></textarea>
+    <hr style="margin:18px 0;border:none;height:1px;background:#ddd;">
 
-<div class="btns">
-<button class="btn-save" onclick="guardar()">Guardar</button>
-<button id="btnSync" class="btn-sync" onclick="sincronizar()">Sincronizar</button>
-</div>
+    <h3>Datos del Excel</h3>
 
-<div id="mensaje"></div>
+    <div class="row">
+      <div>
+        <label for="filtroGuardia">Filtrar por guardia</label>
+        <select id="filtroGuardia" onchange="cargarTablaExcel()">
+          <option value="">Todas</option>
+          <option value="A">A</option>
+          <option value="B">B</option>
+          <option value="C">C</option>
+        </select>
+      </div>
 
-</div>
+      <div>
+        <label for="filtroEstado">Filtrar por estado</label>
+        <select id="filtroEstado" onchange="cargarTablaExcel()">
+          <option value="">Todos</option>
+          <option value="Operativo">Operativo</option>
+          <option value="Inoperativo">Inoperativo</option>
+          <option value="Mantenimiento">Mantenimiento</option>
+        </select>
+      </div>
+    </div>
+
+    <label for="filtroFecha">Filtrar por fecha</label>
+    <input type="date" id="filtroFecha" onchange="cargarTablaExcel()">
+
+    <button type="button" class="btn-tabla" onclick="cargarTablaExcel()">Actualizar tabla</button>
+
+    <div class="small-note">La tabla usa los datos reales del Excel.</div>
+
+    <div class="table-wrap">
+      <div id="tablaResumen"></div>
+    </div>
+
+  </div>
 </div>
 
 <script>
+const URL = "https://script.google.com/macros/s/AKfycbz5wv_wItDwvVGwTNw4a3GyKtLsIVU4G6geFhNgM-1F-jpVs-rpaqoNNjT0T0GY4TLnFQ/exec";
 
-const URL = "PEGA_AQUI_TU_URL";
+let listasMaestras = {
+  dni: [],
+  equipos: [],
+  labores: []
+};
 
-let listasMaestras = { dni: [], equipos: [], labores: [] };
-
-async function cargarListasMaestras(){
-  const res = await fetch(URL + "?listas=1");
-  listasMaestras = await res.json();
+// Fecha limpia
+function obtenerFecha() {
+  const n = new Date();
+  const dd = String(n.getDate()).padStart(2, '0');
+  const mm = String(n.getMonth() + 1).padStart(2, '0');
+  const yyyy = n.getFullYear();
+  const hh = String(n.getHours()).padStart(2, '0');
+  const mi = String(n.getMinutes()).padStart(2, '0');
+  const ss = String(n.getSeconds()).padStart(2, '0');
+  return `${dd}/${mm}/${yyyy} ${hh}:${mi}:${ss}`;
 }
 
+// Guardia automática
+function obtenerGuardia() {
+  let now = new Date();
+  let h = now.getHours();
+  let esDia = h >= 7 && h < 19;
 
-// AUTOCOMPLETE MEJORADO
+  let base = new Date(esDia ? "2026-04-15T07:00:00" : "2026-04-15T19:00:00");
+
+  if (!esDia && h < 7) {
+    now.setDate(now.getDate() - 1);
+  }
+
+  let diff = Math.floor((now - base) / (1000 * 60 * 60 * 24));
+  let bloque = ((Math.floor(diff / 7) % 3) + 3) % 3;
+
+  if (esDia) {
+    if (bloque === 0) return "B";
+    if (bloque === 1) return "C";
+    return "A";
+  } else {
+    if (bloque === 0) return "A";
+    if (bloque === 1) return "B";
+    return "C";
+  }
+}
+
+// Actualizar guardia visible
+function actualizarGuardiaVisible() {
+  document.getElementById("guardia").value = obtenerGuardia();
+}
+
+// Estado conexión
+function actualizarEstado(tipo) {
+  const el = document.getElementById("estadoConexion");
+  el.className = "estado-box";
+
+  if (tipo === "online") {
+    el.textContent = "Con conexión";
+    el.classList.add("estado-ok");
+  } else if (tipo === "offline") {
+    el.textContent = "Sin conexión";
+    el.classList.add("estado-off");
+  } else if (tipo === "sync") {
+    el.textContent = "Sincronizando...";
+    el.classList.add("estado-sync");
+  }
+}
+
+function verificarConexion() {
+  if (navigator.onLine) actualizarEstado("online");
+  else actualizarEstado("offline");
+}
+
+// Mensaje
+function mostrarMensaje(t) {
+  document.getElementById("mensaje").textContent = t;
+}
+
+// Pendientes
+function actualizarPendientes() {
+  const arr = JSON.parse(localStorage.getItem("data") || "[]");
+  document.getElementById("pendientes").textContent = "Pendientes: " + arr.length;
+}
+
+// Cargar listas maestras desde Sheets
+async function cargarListasMaestras() {
+  try {
+    const res = await fetch(URL + "?listas=1");
+    const data = await res.json();
+
+    listasMaestras.dni = Array.isArray(data.dni) ? data.dni : [];
+    listasMaestras.equipos = Array.isArray(data.equipos) ? data.equipos : [];
+    listasMaestras.labores = Array.isArray(data.labores) ? data.labores : [];
+
+  } catch (err) {
+    console.error("Error cargando listas maestras:", err);
+  }
+}
+
+// Mostrar dropdown bonito
 function inicializarAutocomplete(inputId, listaId, tipoLista) {
   const input = document.getElementById(inputId);
   const lista = document.getElementById(listaId);
-
-  if (!input || !lista) return;
 
   input.addEventListener("input", () => {
     const valor = input.value.trim().toLowerCase();
     lista.innerHTML = "";
 
+    if (!valor) {
+      lista.style.display = "none";
+      return;
+    }
+
     const origen = listasMaestras[tipoLista] || [];
 
-    const filtrados = origen
-      .filter(item => item.toLowerCase().includes(valor))
-      .slice(0, 8);
+    console.log("USANDO LISTA:", tipoLista, origen);
+    const filtrados = origen.filter(item => item.toLowerCase().includes(valor)).slice(0, 8);
 
-    if (!filtrados.length) {
+    if (filtrados.length === 0) {
       lista.style.display = "none";
       return;
     }
@@ -295,36 +489,18 @@ function inicializarAutocomplete(inputId, listaId, tipoLista) {
       const div = document.createElement("div");
       div.className = "autocomplete-item";
       div.textContent = item;
-
       div.onclick = () => {
         input.value = item;
         lista.style.display = "none";
       };
-
       lista.appendChild(div);
     });
 
     lista.style.display = "block";
   });
 
-  // CLICK → MOSTRAR TODO
   input.addEventListener("focus", () => {
-    lista.innerHTML = "";
-
-    (listasMaestras[tipoLista] || []).slice(0, 8).forEach(item => {
-      const div = document.createElement("div");
-      div.className = "autocomplete-item";
-      div.textContent = item;
-
-      div.onclick = () => {
-        input.value = item;
-        lista.style.display = "none";
-      };
-
-      lista.appendChild(div);
-    });
-
-    lista.style.display = "block";
+    input.dispatchEvent(new Event("input"));
   });
 
   document.addEventListener("click", (e) => {
@@ -334,16 +510,236 @@ function inicializarAutocomplete(inputId, listaId, tipoLista) {
   });
 }
 
-// INIT
-window.addEventListener("load", async ()=>{
-  await cargarListasMaestras();
+// Validar que el valor exista en la lista
+function existeEnLista(valor, tipoLista) {
+  const origen = listasMaestras[tipoLista] || [];
+  return origen.includes(valor.trim());
+}
 
-  inicializarAutocomplete("dni","listaDni","dni");
-  inicializarAutocomplete("equipo","listaEquipo","equipos");
-  inicializarAutocomplete("labor","listaLabor","labores");
+// Guardar local
+function guardar() {
+  const data = {
+    fecha: obtenerFecha(),
+    tipo: document.getElementById("tipo").value,
+    dni: document.getElementById("dni").value.trim(),
+    equipo: document.getElementById("equipo").value.trim(),
+    labor: document.getElementById("labor").value.trim(),
+    estado: document.getElementById("estado").value,
+    guardia: obtenerGuardia(),
+    observacion: document.getElementById("obs").value.trim()
+  };
+
+  if (!data.dni || !data.equipo || !data.labor || !data.observacion) {
+    mostrarMensaje("Completa DNI, equipo, labor y observación");
+    return;
+  }
+
+  if (!existeEnLista(data.dni, "dni")) {
+    mostrarMensaje("El DNI debe ser uno de la lista");
+    return;
+  }
+
+  if (!existeEnLista(data.equipo, "equipos")) {
+    mostrarMensaje("El equipo debe ser uno de la lista");
+    return;
+  }
+
+  if (!existeEnLista(data.labor, "labores")) {
+    mostrarMensaje("La labor debe ser una de la lista");
+    return;
+  }
+
+  let arr = JSON.parse(localStorage.getItem("data") || "[]");
+  arr.push(data);
+  localStorage.setItem("data", JSON.stringify(arr));
+
+  mostrarMensaje("Guardado localmente");
+  actualizarPendientes();
+
+  document.getElementById("dni").value = "";
+  document.getElementById("equipo").value = "";
+  document.getElementById("labor").value = "";
+  document.getElementById("obs").value = "";
+}
+
+// Sincronizar
+let sincronizando = false;
+
+async function sincronizar() {
+  if (sincronizando) {
+    mostrarMensaje("Ya se está sincronizando...");
+    return;
+  }
+
+  const arr = JSON.parse(localStorage.getItem("data") || "[]");
+
+  if (arr.length === 0) {
+    mostrarMensaje("No hay datos pendientes");
+    actualizarPendientes();
+    return;
+  }
+
+  sincronizando = true;
+
+  const btn = document.getElementById("btnSync");
+  btn.disabled = true;
+  btn.textContent = "Enviando...";
+  actualizarEstado("sync");
+
+  try {
+    for (const r of arr) {
+      const res = await fetch(URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify(r)
+      });
+
+      const txt = await res.text();
+
+      if (!res.ok || txt.includes("ERROR") || txt.includes("Error")) {
+        throw new Error(txt || "Fallo al enviar");
+      }
+    }
+
+    localStorage.removeItem("data");
+    mostrarMensaje("Sincronizado correctamente");
+    actualizarPendientes();
+    cargarTablaExcel();
+
+  } catch (err) {
+    console.error(err);
+    mostrarMensaje("Error al sincronizar");
+    actualizarEstado("offline");
+  } finally {
+    sincronizando = false;
+    btn.disabled = false;
+    btn.textContent = "Sincronizar";
+    if (navigator.onLine) {
+      actualizarEstado("online");
+    }
+  }
+}
+
+// Cargar tabla desde Excel
+async function cargarTablaExcel() {
+  try {
+    const res = await fetch(URL);
+    const data = await res.json();
+
+    if (!Array.isArray(data)) {
+      document.getElementById("tablaResumen").innerHTML =
+        "<p style='font-size:13px;color:#991b1b;'>No se pudo cargar la tabla</p>";
+      return;
+    }
+
+    const g = document.getElementById("filtroGuardia").value;
+    const e = document.getElementById("filtroEstado").value;
+    const f = document.getElementById("filtroFecha").value;
+
+    let html = `
+      <table>
+        <tr>
+          <th>Equipo</th>
+          <th>Labor</th>
+          <th>Estado</th>
+          <th>Obs</th>
+        </tr>
+    `;
+
+    let filas = 0;
+
+    data.slice(1).forEach(r => {
+      const fecha = r[0] || "";
+      const estado = r[6] || "";
+      const guardia = r[7] || "";
+
+      let fechaOK = true;
+
+      if (f && fecha) {
+        const p = fecha.split("/");
+        if (p.length === 3) {
+          const iso = `${p[2]}-${String(p[1]).padStart(2, "0")}-${String(p[0]).padStart(2, "0")}`;
+          fechaOK = (iso === f);
+        } else {
+          fechaOK = false;
+        }
+      }
+
+      if ((!g || guardia === g) && (!e || estado === e) && fechaOK) {
+        let badgeClass = "badge-mantenimiento";
+        if (estado === "Operativo") badgeClass = "badge-operativo";
+        else if (estado === "Inoperativo") badgeClass = "badge-inoperativo";
+
+        html += `
+          <tr>
+            <td>${r[4] || ""}</td>
+            <td>${r[5] || ""}</td>
+            <td><span class="badge ${badgeClass}">${estado}</span></td>
+            <td>${r[8] || ""}</td>
+          </tr>
+        `;
+        filas++;
+      }
+    });
+
+    html += "</table>";
+
+    if (filas === 0) {
+      document.getElementById("tablaResumen").innerHTML =
+        "<p style='font-size:13px;color:#666;text-align:center;margin-top:10px;'>No hay datos para esos filtros</p>";
+    } else {
+      document.getElementById("tablaResumen").innerHTML = html;
+    }
+
+  } catch (err) {
+    console.error(err);
+    document.getElementById("tablaResumen").innerHTML =
+      "<p style='font-size:13px;color:#991b1b;text-align:center;margin-top:10px;'>Error al cargar la tabla</p>";
+  }
+}
+
+// Eventos de conexión
+window.addEventListener("online", () => {
+  actualizarEstado("online");
+  const arr = JSON.parse(localStorage.getItem("data") || "[]");
+  if (arr.length > 0) {
+    mostrarMensaje("Conexión recuperada, enviando...");
+    sincronizar();
+  }
 });
 
-</script>
+window.addEventListener("offline", () => {
+  actualizarEstado("offline");
+});
 
+// Inicial
+window.addEventListener("load", async () => {
+
+  actualizarGuardiaVisible();
+  actualizarPendientes();
+  verificarConexion();
+
+  //ESPERAR LISTAS
+  await cargarListasMaestras();
+
+  console.log("LISTAS CARGADAS:", listasMaestras); // DEBUG
+
+  // ACTIVAR AUTOCOMPLETE DESPUÉS
+  inicializarAutocomplete("dni", "listaDni", "dni");
+  inicializarAutocomplete("equipo", "listaEquipo", "equipos");
+  inicializarAutocomplete("labor", "listaLabor", "labores");
+
+  cargarTablaExcel();
+
+  const arr = JSON.parse(localStorage.getItem("data") || "[]");
+  if (navigator.onLine && arr.length > 0) {
+    mostrarMensaje("Enviando datos pendientes...");
+    sincronizar();
+  }
+
+});
+
+setInterval(actualizarGuardiaVisible, 30000);
+</script>
 </body>
 </html>
