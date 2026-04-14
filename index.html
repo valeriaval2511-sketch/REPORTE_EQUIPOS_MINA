@@ -8,23 +8,15 @@
 <style>
 *{box-sizing:border-box}
 
-body{
-  margin:0;
-  background:#eef2f6;
-  font-family:Arial;
-}
+body{margin:0;background:#eef2f6;font-family:Arial}
 
-.container{
-  max-width:520px;
-  margin:auto;
-  padding:16px;
-}
+.container{max-width:520px;margin:auto;padding:16px}
 
 .card{
   background:white;
   padding:18px;
   border-radius:16px;
-  box-shadow:0 8px 20px rgba(0,0,0,0.08);
+  box-shadow:0 8px 20px rgba(0,0,0,0.08)
 }
 
 h1,h3,label,th{
@@ -35,7 +27,6 @@ h1,h3,label,th{
 .estado-box{
   margin-top:6px;
   font-size:12px;
-  font-weight:bold;
   padding:4px 10px;
   border-radius:20px;
   display:inline-block;
@@ -44,6 +35,12 @@ h1,h3,label,th{
 .estado-ok{background:#d1fae5;color:#065f46}
 .estado-off{background:#fee2e2;color:#991b1b}
 .estado-sync{background:#fef3c7;color:#92400e}
+
+.pendientes{
+  font-size:12px;
+  margin-top:4px;
+  color:#555;
+}
 
 label{margin-top:10px;display:block;font-size:13px}
 
@@ -85,16 +82,8 @@ table{
   margin-top:10px;
 }
 
-th{
-  background:#198754;
-  color:white;
-  padding:8px;
-}
-
-td{
-  padding:8px;
-  border-bottom:1px solid #eee;
-}
+th{background:#198754;color:white;padding:8px}
+td{padding:8px;border-bottom:1px solid #eee}
 
 .badge{
   padding:4px 8px;
@@ -104,12 +93,6 @@ td{
 }
 
 #mensaje{margin-top:8px;font-size:13px}
-
-.pendientes{
-  font-size:12px;
-  margin-top:5px;
-  color:#555;
-}
 </style>
 </head>
 
@@ -196,15 +179,7 @@ td{
 
 <script>
 
-const URL="https://script.google.com/macros/s/AKfycbxmmAALyDkCnFSrLhZmEZqJBEWyxBU6JL7-lOqBtKnTeeHU1w83QLQ_u-rAI47sY7mKng/exec";
-
-function mostrarMensaje(t){mensaje.textContent=t}
-
-// CONTADOR
-function actualizarPendientes(){
-let arr=JSON.parse(localStorage.getItem("data")||"[]");
-pendientes.textContent="Pendientes: "+arr.length;
-}
+const URL="https://script.google.com/macros/s/AKfycbzORn0IcBpv_UUAbFKBK1SBNyjy3fo4wz89f15N0suMpaXPmWYxJgK6dlZcEX6KqGBTtw/exec";
 
 // FECHA
 function obtenerFecha(){
@@ -237,7 +212,7 @@ return "C";
 
 setInterval(()=>guardia.value=obtenerGuardia(),1000);
 
-// ESTADO CONEXION
+// CONEXION
 function actualizarEstado(tipo){
 estadoConexion.className="estado-box";
 
@@ -261,14 +236,24 @@ navigator.onLine?actualizarEstado("online"):actualizarEstado("offline");
 
 window.addEventListener("online",()=>{
 actualizarEstado("online");
-if(JSON.parse(localStorage.getItem("data")||"[]").length>0){
-sincronizar();
-}
+let arr=JSON.parse(localStorage.getItem("data")||"[]");
+if(arr.length>0) sincronizar();
 });
 
 window.addEventListener("offline",()=>actualizarEstado("offline"));
 
+window.addEventListener("load",()=>{
+let arr=JSON.parse(localStorage.getItem("data")||"[]");
+if(navigator.onLine && arr.length>0) sincronizar();
+});
+
 verificar();
+
+// CONTADOR
+function actualizarPendientes(){
+let arr=JSON.parse(localStorage.getItem("data")||"[]");
+pendientes.textContent="Pendientes: "+arr.length;
+}
 
 // GUARDAR
 function guardar(){
@@ -288,15 +273,12 @@ arr.push(data);
 localStorage.setItem("data",JSON.stringify(arr));
 
 mostrarMensaje("Guardado");
+actualizarPendientes();
 
 dni.value="";
 equipo.value="";
 labor.value="";
 obs.value="";
-
-actualizarPendientes();
-
-if(navigator.onLine) sincronizar();
 }
 
 // SINCRONIZAR
@@ -325,7 +307,6 @@ body:JSON.stringify(r)
 
 localStorage.removeItem("data");
 mostrarMensaje("Sincronizado");
-
 }catch(e){
 mostrarMensaje("Error al sincronizar");
 }
@@ -385,7 +366,10 @@ html+="</table>";
 tablaResumen.innerHTML=html;
 }
 
+function mostrarMensaje(t){mensaje.textContent=t}
+
 actualizarPendientes();
+cargarTablaExcel();
 
 </script>
 </body>
