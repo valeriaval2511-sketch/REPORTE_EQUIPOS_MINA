@@ -476,6 +476,8 @@ function inicializarAutocomplete(inputId, listaId, tipoLista) {
     }
 
     const origen = listasMaestras[tipoLista] || [];
+
+    console.log("USANDO LISTA:", tipoLista, origen);
     const filtrados = origen.filter(item => item.toLowerCase().includes(valor)).slice(0, 8);
 
     if (filtrados.length === 0) {
@@ -712,12 +714,17 @@ window.addEventListener("offline", () => {
 
 // Inicial
 window.addEventListener("load", async () => {
+
   actualizarGuardiaVisible();
   actualizarPendientes();
   verificarConexion();
 
+  //ESPERAR LISTAS
   await cargarListasMaestras();
 
+  console.log("LISTAS CARGADAS:", listasMaestras); // DEBUG
+
+  // ACTIVAR AUTOCOMPLETE DESPUÉS
   inicializarAutocomplete("dni", "listaDni", "dni");
   inicializarAutocomplete("equipo", "listaEquipo", "equipos");
   inicializarAutocomplete("labor", "listaLabor", "labores");
@@ -729,6 +736,7 @@ window.addEventListener("load", async () => {
     mostrarMensaje("Enviando datos pendientes...");
     sincronizar();
   }
+
 });
 
 setInterval(actualizarGuardiaVisible, 30000);
