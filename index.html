@@ -8,28 +8,49 @@
 <style>
 *{box-sizing:border-box}
 
-body{margin:0;background:#eef2f6;font-family:Arial}
+body{
+  margin:0;
+  background:#eef2f6;
+  font-family:Arial, sans-serif;
+  color:#222;
+}
 
-.container{max-width:520px;margin:auto;padding:16px}
+.container{
+  max-width:520px;
+  margin:auto;
+  padding:14px;
+}
 
 .card{
-  background:white;
+  background:#fff;
   padding:18px;
   border-radius:16px;
-  box-shadow:0 8px 20px rgba(0,0,0,0.08)
+  box-shadow:0 8px 20px rgba(0,0,0,0.08);
 }
 
 h1,h3,label,th{
-  font-family:'Century Gothic';
+  font-family:'Century Gothic', Arial, sans-serif;
   font-weight:bold;
 }
 
+h1{
+  margin:0 0 4px 0;
+  font-size:22px;
+  line-height:1.1;
+}
+
+h3{
+  margin:18px 0 8px 0;
+  font-size:18px;
+}
+
 .estado-box{
-  margin-top:6px;
+  margin-top:2px;
   font-size:12px;
-  padding:4px 10px;
-  border-radius:20px;
+  padding:5px 12px;
+  border-radius:999px;
   display:inline-block;
+  font-weight:bold;
 }
 
 .estado-ok{background:#d1fae5;color:#065f46}
@@ -37,21 +58,31 @@ h1,h3,label,th{
 .estado-sync{background:#fef3c7;color:#92400e}
 
 .pendientes{
-  font-size:12px;
   margin-top:4px;
+  font-size:12px;
   color:#555;
 }
 
-label{margin-top:10px;display:block;font-size:13px}
+label{
+  margin-top:10px;
+  margin-bottom:6px;
+  display:block;
+  font-size:13px;
+}
 
 input,select,textarea{
   width:100%;
-  padding:10px;
+  padding:10px 12px;
   border-radius:12px;
-  border:1px solid #ccc;
+  border:1px solid #cfd6dd;
+  font-size:14px;
+  background:#fff;
 }
 
-textarea{height:80px}
+textarea{
+  height:88px;
+  resize:vertical;
+}
 
 .row{
   display:grid;
@@ -67,310 +98,497 @@ textarea{height:80px}
 }
 
 button{
-  padding:11px;
+  padding:11px 12px;
   border:none;
   border-radius:12px;
   font-weight:bold;
+  font-family:Arial, sans-serif;
+  cursor:pointer;
 }
 
-.btn-save{background:#2f6edb;color:white}
-.btn-sync{background:#198754;color:white}
+.btn-save{
+  background:#2f6edb;
+  color:#fff;
+}
+
+.btn-sync{
+  background:#198754;
+  color:#fff;
+}
+
+.btn-tabla{
+  background:#198754;
+  color:#fff;
+  margin-top:10px;
+  width:100%;
+}
+
+#mensaje{
+  margin-top:10px;
+  font-size:13px;
+}
+
+#tablaResumen{
+  margin-top:12px;
+}
+
+.table-wrap{
+  margin-top:10px;
+  overflow-x:auto;
+  border-radius:12px;
+}
 
 table{
   width:100%;
   border-collapse:collapse;
-  margin-top:10px;
+  background:#fff;
+  font-family:Arial, sans-serif;
+  font-size:12px;
+  table-layout:fixed;
 }
 
-th{background:#198754;color:white;padding:8px}
-td{padding:8px;border-bottom:1px solid #eee}
+th{
+  background:#198754;
+  color:#fff;
+  padding:9px 6px;
+  white-space:nowrap;
+  text-align:center;
+  font-size:12px;
+}
+
+td{
+  padding:9px 6px;
+  border-bottom:1px solid #e5e7eb;
+  vertical-align:middle;
+  text-align:center;
+  font-size:12px;
+  word-wrap:break-word;
+}
+
+tr:hover{
+  background:#f9fafb;
+}
 
 .badge{
-  padding:4px 8px;
-  border-radius:20px;
-  color:white;
+  display:inline-block;
+  min-width:98px;
+  text-align:center;
+  padding:4px 10px;
+  border-radius:999px;
+  color:#fff;
   font-weight:bold;
+  font-size:11px;
+  line-height:1.2;
 }
 
-#mensaje{margin-top:8px;font-size:13px}
+.badge-operativo{
+  background:#198754;
+}
+
+.badge-inoperativo{
+  background:#dc3545;
+}
+
+.badge-mantenimiento{
+  background:#d39e00;
+}
+
+.small-note{
+  font-size:12px;
+  color:#666;
+  margin-top:6px;
+}
+
+@media (max-width:480px){
+  .row{
+    grid-template-columns:1fr;
+  }
+
+  table{
+    font-size:11px;
+  }
+
+  th,td{
+    padding:8px 4px;
+    font-size:11px;
+  }
+
+  .badge{
+    min-width:86px;
+    font-size:10px;
+  }
+}
 </style>
 </head>
 
 <body>
 <div class="container">
-<div class="card">
+  <div class="card">
 
-<h1>Reporte Equipos</h1>
+    <h1>Reporte Equipos</h1>
+    <div id="estadoConexion" class="estado-box">Verificando...</div>
+    <div id="pendientes" class="pendientes"></div>
 
-<div id="estadoConexion" class="estado-box">Verificando...</div>
-<div id="pendientes" class="pendientes"></div>
+    <label for="tipo">Tipo</label>
+    <select id="tipo">
+      <option value="Entrada">Entrada</option>
+      <option value="Salida">Salida</option>
+    </select>
 
-<label>Tipo</label>
-<select id="tipo">
-<option>Entrada</option>
-<option>Salida</option>
-</select>
+    <div class="row">
+      <div>
+        <label for="guardia">Guardia</label>
+        <input id="guardia" readonly>
+      </div>
+      <div>
+        <label for="labor">Labor</label>
+        <input id="labor">
+      </div>
+    </div>
 
-<div class="row">
-<div>
-<label>Guardia</label>
-<input id="guardia" readonly>
-</div>
-<div>
-<label>Labor</label>
-<input id="labor">
-</div>
-</div>
+    <div class="row">
+      <div>
+        <label for="equipo">Equipo</label>
+        <input id="equipo">
+      </div>
+      <div>
+        <label for="estado">Estado</label>
+        <select id="estado">
+          <option value="Operativo">Operativo</option>
+          <option value="Inoperativo">Inoperativo</option>
+          <option value="Mantenimiento">Mantenimiento</option>
+        </select>
+      </div>
+    </div>
 
-<div class="row">
-<div>
-<label>Equipo</label>
-<input id="equipo">
-</div>
-<div>
-<label>Estado</label>
-<select id="estado">
-<option>Operativo</option>
-<option>Inoperativo</option>
-<option>Mantenimiento</option>
-</select>
-</div>
-</div>
+    <label for="dni">DNI</label>
+    <input id="dni">
 
-<label>DNI</label>
-<input id="dni">
+    <label for="obs">Observación</label>
+    <textarea id="obs"></textarea>
 
-<label>Observación</label>
-<textarea id="obs"></textarea>
+    <div class="btns">
+      <button class="btn-save" onclick="guardar()">Guardar</button>
+      <button id="btnSync" class="btn-sync" onclick="sincronizar()">Sincronizar</button>
+    </div>
 
-<div class="btns">
-<button class="btn-save" onclick="guardar()">Guardar</button>
-<button id="btnSync" class="btn-sync" onclick="sincronizar()">Sincronizar</button>
-</div>
+    <div id="mensaje"></div>
 
-<div id="mensaje"></div>
+    <hr style="margin:18px 0;border:none;height:1px;background:#ddd;">
 
-<hr>
+    <h3>Datos del Excel</h3>
 
-<h3>Datos del Excel</h3>
+    <div class="row">
+      <div>
+        <label for="filtroGuardia">Filtrar por guardia</label>
+        <select id="filtroGuardia" onchange="cargarTablaExcel()">
+          <option value="">Todas</option>
+          <option value="A">A</option>
+          <option value="B">B</option>
+          <option value="C">C</option>
+        </select>
+      </div>
 
-<select id="filtroGuardia" onchange="cargarTablaExcel()">
-<option value="">Todas</option>
-<option>A</option>
-<option>B</option>
-<option>C</option>
-</select>
+      <div>
+        <label for="filtroEstado">Filtrar por estado</label>
+        <select id="filtroEstado" onchange="cargarTablaExcel()">
+          <option value="">Todos</option>
+          <option value="Operativo">Operativo</option>
+          <option value="Inoperativo">Inoperativo</option>
+          <option value="Mantenimiento">Mantenimiento</option>
+        </select>
+      </div>
+    </div>
 
-<select id="filtroEstado" onchange="cargarTablaExcel()">
-<option value="">Todos</option>
-<option>Operativo</option>
-<option>Inoperativo</option>
-<option>Mantenimiento</option>
-</select>
+    <label for="filtroFecha">Filtrar por fecha</label>
+    <input type="date" id="filtroFecha" onchange="cargarTablaExcel()">
 
-<input type="date" id="filtroFecha" onchange="cargarTablaExcel()">
+    <button type="button" class="btn-tabla" onclick="cargarTablaExcel()">Actualizar tabla</button>
 
-<button onclick="cargarTablaExcel()">Actualizar</button>
+    <div class="small-note">La tabla usa los datos reales del Excel.</div>
 
-<div id="tablaResumen"></div>
+    <div class="table-wrap">
+      <div id="tablaResumen"></div>
+    </div>
 
-</div>
+  </div>
 </div>
 
 <script>
+const URL = "https://script.google.com/macros/s/AKfycbyR7JiPsVwHsTiyvd5IQSpqnMyv57re4C2CsHFu_CCw8o7fZoApL6ZqqdEjtg3jjo835g/exec";
 
-const URL="https://script.google.com/macros/s/AKfycbzORn0IcBpv_UUAbFKBK1SBNyjy3fo4wz89f15N0suMpaXPmWYxJgK6dlZcEX6KqGBTtw/exec";
-
-// FECHA
-function obtenerFecha(){
-let n=new Date();
-return `${String(n.getDate()).padStart(2,'0')}/${String(n.getMonth()+1).padStart(2,'0')}/${n.getFullYear()} ${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')}`;
+// Fecha limpia
+function obtenerFecha() {
+  const n = new Date();
+  const dd = String(n.getDate()).padStart(2, '0');
+  const mm = String(n.getMonth() + 1).padStart(2, '0');
+  const yyyy = n.getFullYear();
+  const hh = String(n.getHours()).padStart(2, '0');
+  const mi = String(n.getMinutes()).padStart(2, '0');
+  const ss = String(n.getSeconds()).padStart(2, '0');
+  return `${dd}/${mm}/${yyyy} ${hh}:${mi}:${ss}`;
 }
 
-// GUARDIA
-function obtenerGuardia(){
-let now=new Date();
-let h=now.getHours();
-let dia=h>=7&&h<19;
+// Guardia automática
+function obtenerGuardia() {
+  let now = new Date();
+  let h = now.getHours();
+  let esDia = h >= 7 && h < 19;
 
-let base=new Date(dia?"2026-04-15T07:00:00":"2026-04-15T19:00:00");
-if(!dia && h<7) now.setDate(now.getDate()-1);
+  let base = new Date(esDia ? "2026-04-15T07:00:00" : "2026-04-15T19:00:00");
 
-let diff=Math.floor((now-base)/(1000*60*60*24));
-let bloque=Math.floor(diff/7)%3;
+  if (!esDia && h < 7) {
+    now.setDate(now.getDate() - 1);
+  }
 
-if(dia){
-if(bloque===0)return "B";
-if(bloque===1)return "C";
-return "A";
-}else{
-if(bloque===0)return "A";
-if(bloque===1)return "B";
-return "C";
-}
-}
+  let diff = Math.floor((now - base) / (1000 * 60 * 60 * 24));
+  let bloque = ((Math.floor(diff / 7) % 3) + 3) % 3;
 
-setInterval(()=>guardia.value=obtenerGuardia(),1000);
-
-// CONEXION
-function actualizarEstado(tipo){
-estadoConexion.className="estado-box";
-
-if(tipo==="online"){
-estadoConexion.textContent="Con conexión";
-estadoConexion.classList.add("estado-ok");
-}
-if(tipo==="offline"){
-estadoConexion.textContent="Sin conexión";
-estadoConexion.classList.add("estado-off");
-}
-if(tipo==="sync"){
-estadoConexion.textContent="Sincronizando...";
-estadoConexion.classList.add("estado-sync");
-}
+  if (esDia) {
+    if (bloque === 0) return "B";
+    if (bloque === 1) return "C";
+    return "A";
+  } else {
+    if (bloque === 0) return "A";
+    if (bloque === 1) return "B";
+    return "C";
+  }
 }
 
-function verificar(){
-navigator.onLine?actualizarEstado("online"):actualizarEstado("offline");
+// Actualizar guardia visible
+function actualizarGuardiaVisible() {
+  document.getElementById("guardia").value = obtenerGuardia();
 }
 
-window.addEventListener("online",()=>{
-actualizarEstado("online");
-let arr=JSON.parse(localStorage.getItem("data")||"[]");
-if(arr.length>0) sincronizar();
+// Estado conexión
+function actualizarEstado(tipo) {
+  const el = document.getElementById("estadoConexion");
+  el.className = "estado-box";
+
+  if (tipo === "online") {
+    el.textContent = "Con conexión";
+    el.classList.add("estado-ok");
+  } else if (tipo === "offline") {
+    el.textContent = "Sin conexión";
+    el.classList.add("estado-off");
+  } else if (tipo === "sync") {
+    el.textContent = "Sincronizando...";
+    el.classList.add("estado-sync");
+  }
+}
+
+function verificarConexion() {
+  if (navigator.onLine) actualizarEstado("online");
+  else actualizarEstado("offline");
+}
+
+// Mensaje
+function mostrarMensaje(t) {
+  document.getElementById("mensaje").textContent = t;
+}
+
+// Pendientes
+function actualizarPendientes() {
+  const arr = JSON.parse(localStorage.getItem("data") || "[]");
+  document.getElementById("pendientes").textContent = "Pendientes: " + arr.length;
+}
+
+// Guardar local
+function guardar() {
+  const data = {
+    fecha: obtenerFecha(),
+    tipo: document.getElementById("tipo").value,
+    dni: document.getElementById("dni").value.trim(),
+    equipo: document.getElementById("equipo").value.trim(),
+    labor: document.getElementById("labor").value.trim(),
+    estado: document.getElementById("estado").value,
+    guardia: obtenerGuardia(),
+    observacion: document.getElementById("obs").value.trim()
+  };
+
+  if (!data.dni || !data.equipo || !data.labor || !data.observacion) {
+    mostrarMensaje("Completa DNI, equipo, labor y observación");
+    return;
+  }
+
+  let arr = JSON.parse(localStorage.getItem("data") || "[]");
+  arr.push(data);
+  localStorage.setItem("data", JSON.stringify(arr));
+
+  mostrarMensaje("Guardado localmente");
+  actualizarPendientes();
+
+  document.getElementById("dni").value = "";
+  document.getElementById("equipo").value = "";
+  document.getElementById("labor").value = "";
+  document.getElementById("obs").value = "";
+}
+
+// Sincronizar
+let sincronizando = false;
+
+async function sincronizar() {
+  if (sincronizando) {
+    mostrarMensaje("Ya se está sincronizando...");
+    return;
+  }
+
+  const arr = JSON.parse(localStorage.getItem("data") || "[]");
+
+  if (arr.length === 0) {
+    mostrarMensaje("No hay datos pendientes");
+    actualizarPendientes();
+    return;
+  }
+
+  sincronizando = true;
+
+  const btn = document.getElementById("btnSync");
+  btn.disabled = true;
+  btn.textContent = "Enviando...";
+  actualizarEstado("sync");
+
+  try {
+    for (const r of arr) {
+      const res = await fetch(URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify(r)
+      });
+
+      const txt = await res.text();
+
+      if (!res.ok || txt.includes("ERROR") || txt.includes("Error")) {
+        throw new Error(txt || "Fallo al enviar");
+      }
+    }
+
+    localStorage.removeItem("data");
+    mostrarMensaje("Sincronizado correctamente");
+    actualizarPendientes();
+    cargarTablaExcel();
+
+  } catch (err) {
+    console.error(err);
+    mostrarMensaje("Error al sincronizar");
+    actualizarEstado("offline");
+  } finally {
+    sincronizando = false;
+    btn.disabled = false;
+    btn.textContent = "Sincronizar";
+    if (navigator.onLine) {
+      actualizarEstado("online");
+    }
+  }
+}
+
+// Cargar tabla desde Excel
+async function cargarTablaExcel() {
+  try {
+    const res = await fetch(URL);
+    const data = await res.json();
+
+    if (!Array.isArray(data)) {
+      document.getElementById("tablaResumen").innerHTML =
+        "<p style='font-size:13px;color:#991b1b;'>No se pudo cargar la tabla</p>";
+      return;
+    }
+
+    const g = document.getElementById("filtroGuardia").value;
+    const e = document.getElementById("filtroEstado").value;
+    const f = document.getElementById("filtroFecha").value;
+
+    let html = `
+      <table>
+        <tr>
+          <th>Equipo</th>
+          <th>Labor</th>
+          <th>Estado</th>
+          <th>Obs</th>
+        </tr>
+    `;
+
+    let filas = 0;
+
+    data.slice(1).forEach(r => {
+      const fecha = r[0] || "";
+      const estado = r[6] || "";
+      const guardia = r[7] || "";
+
+      let fechaOK = true;
+
+      if (f && fecha) {
+        const p = fecha.split("/");
+        if (p.length === 3) {
+          const iso = `${p[2]}-${String(p[1]).padStart(2, "0")}-${String(p[0]).padStart(2, "0")}`;
+          fechaOK = (iso === f);
+        } else {
+          fechaOK = false;
+        }
+      }
+
+      if ((!g || guardia === g) && (!e || estado === e) && fechaOK) {
+        let badgeClass = "badge-mantenimiento";
+        if (estado === "Operativo") badgeClass = "badge-operativo";
+        else if (estado === "Inoperativo") badgeClass = "badge-inoperativo";
+
+        html += `
+          <tr>
+            <td>${r[4] || ""}</td>
+            <td>${r[5] || ""}</td>
+            <td><span class="badge ${badgeClass}">${estado}</span></td>
+            <td>${r[8] || ""}</td>
+          </tr>
+        `;
+        filas++;
+      }
+    });
+
+    html += "</table>";
+
+    if (filas === 0) {
+      document.getElementById("tablaResumen").innerHTML =
+        "<p style='font-size:13px;color:#666;text-align:center;margin-top:10px;'>No hay datos para esos filtros</p>";
+    } else {
+      document.getElementById("tablaResumen").innerHTML = html;
+    }
+
+  } catch (err) {
+    console.error(err);
+    document.getElementById("tablaResumen").innerHTML =
+      "<p style='font-size:13px;color:#991b1b;text-align:center;margin-top:10px;'>Error al cargar la tabla</p>";
+  }
+}
+
+// Eventos de conexión
+window.addEventListener("online", () => {
+  actualizarEstado("online");
+  const arr = JSON.parse(localStorage.getItem("data") || "[]");
+  if (arr.length > 0) {
+    mostrarMensaje("Conexión recuperada, enviando...");
+    sincronizar();
+  }
 });
 
-window.addEventListener("offline",()=>actualizarEstado("offline"));
-
-window.addEventListener("load",()=>{
-let arr=JSON.parse(localStorage.getItem("data")||"[]");
-if(navigator.onLine && arr.length>0) sincronizar();
+window.addEventListener("offline", () => {
+  actualizarEstado("offline");
 });
 
-verificar();
+// Inicial
+window.addEventListener("load", () => {
+  actualizarGuardiaVisible();
+  actualizarPendientes();
+  verificarConexion();
+  cargarTablaExcel();
 
-// CONTADOR
-function actualizarPendientes(){
-let arr=JSON.parse(localStorage.getItem("data")||"[]");
-pendientes.textContent="Pendientes: "+arr.length;
-}
-
-// GUARDAR
-function guardar(){
-let data={
-fecha:obtenerFecha(),
-tipo:tipo.value,
-dni:dni.value,
-equipo:equipo.value,
-labor:labor.value,
-estado:estado.value,
-guardia:obtenerGuardia(),
-observacion:obs.value
-};
-
-let arr=JSON.parse(localStorage.getItem("data")||"[]");
-arr.push(data);
-localStorage.setItem("data",JSON.stringify(arr));
-
-mostrarMensaje("Guardado");
-actualizarPendientes();
-
-dni.value="";
-equipo.value="";
-labor.value="";
-obs.value="";
-}
-
-// SINCRONIZAR
-let sincronizando=false;
-
-async function sincronizar(){
-
-if(sincronizando)return;
-
-sincronizando=true;
-
-btnSync.disabled=true;
-btnSync.textContent="Enviando...";
-actualizarEstado("sync");
-
-let arr=JSON.parse(localStorage.getItem("data")||"[]");
-
-try{
-for(let r of arr){
-await fetch(URL,{
-method:"POST",
-headers:{"Content-Type":"text/plain"},
-body:JSON.stringify(r)
-});
-}
-
-localStorage.removeItem("data");
-mostrarMensaje("Sincronizado");
-}catch(e){
-mostrarMensaje("Error al sincronizar");
-}
-
-btnSync.disabled=false;
-btnSync.textContent="Sincronizar";
-sincronizando=false;
-
-actualizarEstado(navigator.onLine?"online":"offline");
-actualizarPendientes();
-cargarTablaExcel();
-}
-
-// TABLA
-async function cargarTablaExcel(){
-const res=await fetch(URL);
-const data=await res.json();
-
-let g=filtroGuardia.value;
-let e=filtroEstado.value;
-let f=filtroFecha.value;
-
-let html="<table><tr><th>Equipo</th><th>Labor</th><th>Estado</th><th>Obs</th></tr>";
-
-data.slice(1).forEach(r=>{
-
-let fecha=r[0];
-let estado=r[6];
-let guardia=r[7];
-
-let ok=true;
-
-if(f){
-let p=fecha.split("/");
-let iso=`${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;
-ok=(iso===f);
-}
-
-if((!g||guardia==g)&&(!e||estado==e)&&ok){
-
-let color="#999";
-if(estado==="Operativo")color="#198754";
-else if(estado==="Inoperativo")color="#dc3545";
-else color="#ffc107";
-
-html+=`
-<tr>
-<td>${r[4]}</td>
-<td>${r[5]}</td>
-<td><span class="badge" style="background:${color}">${estado}</span></td>
-<td>${r[8]}</td>
-</tr>`;
-}
+  const arr = JSON.parse(localStorage.getItem("data") || "[]");
+  if (navigator.onLine && arr.length > 0) {
+    mostrarMensaje("Enviando datos pendientes...");
+    sincronizar();
+  }
 });
 
-html+="</table>";
-tablaResumen.innerHTML=html;
-}
-
-function mostrarMensaje(t){mensaje.textContent=t}
-
-actualizarPendientes();
-cargarTablaExcel();
-
+setInterval(actualizarGuardiaVisible, 30000);
 </script>
 </body>
 </html>
