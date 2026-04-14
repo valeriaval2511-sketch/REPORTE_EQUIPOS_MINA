@@ -6,36 +6,36 @@
 <title>Reporte Mina</title>
 
 <style>
-body {margin:0;background:#eef2f6;font-family:Arial}
-.container {max-width:500px;margin:auto;padding:15px}
-.card {background:white;padding:16px;border-radius:14px;box-shadow:0 6px 16px rgba(0,0,0,0.08)}
+*{box-sizing:border-box}
 
-h1 {font-family:'Century Gothic';font-weight:bold;font-size:22px}
-label {font-size:13px;font-weight:bold;margin-top:10px;display:block}
+body{margin:0;background:#eef2f6;font-family:Arial}
+.container{max-width:500px;margin:auto;padding:15px}
+.card{background:white;padding:16px;border-radius:14px;box-shadow:0 6px 16px rgba(0,0,0,0.08)}
 
-input, select, textarea {
-  width:100%;padding:9px;border-radius:10px;border:1px solid #d1d5db;font-size:14px
+h1{font-family:'Century Gothic';font-weight:bold}
+
+label{font-size:13px;font-weight:bold;margin-top:10px;display:block}
+
+input,select,textarea{
+width:100%;padding:9px;border-radius:10px;border:1px solid #d1d5db
 }
 
-textarea {height:70px}
+textarea{height:70px}
 
-.btns {display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
-button {padding:11px;border-radius:10px;font-weight:bold;border:none}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
 
-.btn-save {background:#2f6edb;color:white}
-.btn-sync {background:#198754;color:white}
+button{padding:11px;border-radius:10px;border:none;font-weight:bold}
 
-table {width:100%;border-collapse:collapse;margin-top:10px}
-th {
-  background:#198754;
-  color:white;
-  font-family:'Century Gothic';
-  padding:8px;
-}
-td {padding:8px;border-bottom:1px solid #eee}
-tr:hover {background:#f3f4f6}
+.btn-save{background:#2f6edb;color:white}
+.btn-sync{background:#198754;color:white}
 
-#mensaje {margin-top:10px;font-size:13px}
+table{width:100%;border-collapse:collapse;margin-top:10px}
+th{background:#198754;color:white;font-family:'Century Gothic';padding:8px}
+td{padding:8px;border-bottom:1px solid #eee}
+
+tr:hover{background:#f3f4f6}
+
+#mensaje{margin-top:10px}
 </style>
 </head>
 
@@ -47,32 +47,34 @@ tr:hover {background:#f3f4f6}
 
 <label>Tipo</label>
 <select id="tipo">
-<option value="Entrada">Entrada</option>
-<option value="Salida">Salida</option>
+<option>Entrada</option>
+<option>Salida</option>
 </select>
 
 <label>DNI</label>
 <input id="dni">
 
-<label>Equipo</label>
-<input id="equipo">
+<label>Guardia (auto)</label>
+<input id="guardia" readonly>
 
 <label>Labor</label>
 <input id="labor">
 
-<label>Estado</label>
-<select id="estado">
-<option>Operativo</option>
-<option>Inoperativo</option>
-<option>Mantenimiento</option>
-</select>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+  <div>
+    <label>Equipo</label>
+    <input id="equipo">
+  </div>
 
-<label>Guardia</label>
-<select id="guardia">
-<option>A</option>
-<option>B</option>
-<option>C</option>
-</select>
+  <div>
+    <label>Estado</label>
+    <select id="estado">
+      <option>Operativo</option>
+      <option>Inoperativo</option>
+      <option>Mantenimiento</option>
+    </select>
+  </div>
+</div>
 
 <label>Observación</label>
 <textarea id="obs"></textarea>
@@ -115,115 +117,130 @@ tr:hover {background:#f3f4f6}
 
 <script>
 
-const URL = "https://script.google.com/macros/s/AKfycbyvHMhLivrnkPNzOAe6v3Gy5Toi2FPjDqddvwcJ4ykqBuMktkCqp18ndbRVtLQzTfExQw/exec";
+const URL="https://script.google.com/macros/s/AKfycbzmVcfYrWTHi4EPcxXTf2s_-mBM64pUZpJgidkoL3oDn0WQqWgDdfB8YbreHFKdlxrQvw/exec";
 
+// FECHA LIMPIA
+function obtenerFecha(){
+const now=new Date()
+return `${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getFullYear()} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`
+}
+
+// GUARDIA AUTOMÁTICA
+function obtenerGuardia(){
+const now=new Date()
+const base=new Date("2026-04-15T07:00:00")
+const dias=Math.floor((now-base)/(1000*60*60*24))
+const ciclo=dias%21
+const esDia=now.getHours()>=7&&now.getHours()<19
+
+if(esDia){
+if(ciclo<7)return "B"
+else if(ciclo<14)return "C"
+else return "A"
+}else{
+if(ciclo<7)return "A"
+else if(ciclo<14)return "B"
+else return "C"
+}
+}
+
+// MOSTRAR GUARDIA
+setInterval(()=>{
+guardia.value=obtenerGuardia()
+},1000)
+
+// MENSAJE
 function mostrarMensaje(t){mensaje.textContent=t}
 
-// GUARDAR LOCAL
+// GUARDAR
 function guardar(){
-  let data={
-    fecha:new Date().toLocaleString("es-PE"),
-    tipo:tipo.value,
-    dni:dni.value,
-    equipo:equipo.value,
-    labor:labor.value,
-    estado:estado.value,
-    guardia:guardia.value,
-    turno:"",
-    observacion:obs.value
-  }
+let data={
+fecha:obtenerFecha(),
+tipo:tipo.value,
+dni:dni.value,
+equipo:equipo.value,
+labor:labor.value,
+estado:estado.value,
+guardia:obtenerGuardia(),
+turno:"",
+observacion:obs.value
+}
 
-  let arr=JSON.parse(localStorage.getItem("data")||"[]")
-  arr.push(data)
-  localStorage.setItem("data",JSON.stringify(arr))
+let arr=JSON.parse(localStorage.getItem("data")||"[]")
+arr.push(data)
+localStorage.setItem("data",JSON.stringify(arr))
 
-  mostrarMensaje("Guardado")
+mostrarMensaje("Guardado")
 
-  if(navigator.onLine){
-    sincronizar()
-  }
+if(navigator.onLine)sincronizar()
 }
 
 // SINCRONIZAR
 async function sincronizar(){
-  let arr=JSON.parse(localStorage.getItem("data")||"[]")
+let arr=JSON.parse(localStorage.getItem("data")||"[]")
 
-  for(let r of arr){
-    await fetch(URL,{
-      method:"POST",
-      headers:{"Content-Type":"text/plain"},
-      body:JSON.stringify(r)
-    })
-  }
-
-  localStorage.removeItem("data")
-  mostrarMensaje("Sincronizado con Excel")
-  cargarTablaExcel()
+for(let r of arr){
+await fetch(URL,{
+method:"POST",
+headers:{"Content-Type":"text/plain"},
+body:JSON.stringify(r)
+})
 }
 
-// AUTO SYNC
-window.addEventListener("online",()=>{
-  mostrarMensaje("Conexión recuperada...")
-  sincronizar()
+localStorage.removeItem("data")
+mostrarMensaje("Sincronizado")
+cargarTablaExcel()
+}
+
+// AUTO
+window.addEventListener("online",()=>sincronizar())
+
+// TABLA
+async function cargarTablaExcel(){
+const res=await fetch(URL)
+const data=await res.json()
+
+let g=filtroGuardia.value
+let e=filtroEstado.value
+let f=filtroFecha.value
+
+let html="<table><tr><th>Equipo</th><th>Labor</th><th>Estado</th><th>Obs</th><th>Guardia</th><th>Fecha</th></tr>"
+
+data.slice(1).forEach(r=>{
+
+let fecha=r[0]
+let estado=r[6]
+let guardia=r[7]
+
+let ok=true
+
+if(f){
+let p=fecha.split("/")
+let iso=`${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`
+ok=(iso===f)
+}
+
+if((!g||guardia==g)&&(!e||estado==e)&&ok){
+
+let color="#999"
+if(estado==="Operativo")color="#198754"
+else if(estado==="Inoperativo")color="#dc3545"
+else color="#ffc107"
+
+html+=`
+<tr>
+<td>${r[4]}</td>
+<td>${r[5]}</td>
+<td><span style="background:${color};color:white;padding:4px 8px;border-radius:20px;font-weight:bold">${estado}</span></td>
+<td>${r[9]}</td>
+<td>${guardia}</td>
+<td>${fecha}</td>
+</tr>`
+}
 })
 
-// TABLA DESDE EXCEL
-async function cargarTablaExcel(){
-  const res=await fetch(URL)
-  const data=await res.json()
-
-  let g=filtroGuardia.value
-  let e=filtroEstado.value
-  let f=filtroFecha.value
-
-  let html="<table><tr><th>Equipo</th><th>Labor</th><th>Estado</th><th>Obs</th><th>Guardia</th><th>Fecha</th></tr>"
-
-  data.slice(1).forEach(r=>{
-
-    let fechaExcel=r[0]
-    let estado=r[6]
-    let guardia=r[7]
-
-    let fechaOK=true
-
-    if(f){
-      let p=fechaExcel.split("/")
-      let iso=`${p[2]}-${p[1].padStart(2,"0")}-${p[0].padStart(2,"0")}`
-      fechaOK=(iso===f)
-    }
-
-    if((!g||guardia==g)&&(!e||estado==e)&&fechaOK){
-
-      let color="#999"
-      if(estado==="Operativo") color="#198754"
-      else if(estado==="Inoperativo") color="#dc3545"
-      else color="#ffc107"
-
-      html+=`
-      <tr>
-        <td>${r[4]}</td>
-        <td>${r[5]}</td>
-        <td>
-          <span style="
-            background:${color};
-            color:white;
-            padding:4px 8px;
-            border-radius:20px;
-            font-weight:bold;
-          ">
-            ${estado}
-          </span>
-        </td>
-        <td>${r[9]}</td>
-        <td>${guardia}</td>
-        <td>${fechaExcel}</td>
-      </tr>
-      `
-    }
-  })
-
-  html+="</table>"
-  tablaResumen.innerHTML=html
+html+="</table>"
+tablaResumen.innerHTML=html
 }
 
 </script>
