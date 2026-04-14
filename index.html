@@ -538,7 +538,12 @@ function inicializarAutocomplete(inputId, listaId, tipoLista) {
 // Validar que el valor exista en la lista
 function existeEnLista(valor, tipoLista) {
   const origen = listasMaestras[tipoLista] || [];
-  return origen.includes(valor.trim());
+
+  if (tipoLista === "dni") {
+    return origen.some(x => x.dni === valor.trim());
+  } else {
+    return origen.includes(valor.trim());
+  }
 }
 
 // Guardar local
