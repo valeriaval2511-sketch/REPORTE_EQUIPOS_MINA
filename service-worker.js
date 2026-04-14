@@ -1,4 +1,4 @@
-const CACHE = "app-mina-v2";
+const CACHE = "app-mina-v3";
 
 const ASSETS = [
   "./",
