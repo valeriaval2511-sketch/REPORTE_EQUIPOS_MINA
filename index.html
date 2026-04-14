@@ -8,241 +8,477 @@
 <style>
 *{box-sizing:border-box}
 
-body{margin:0;background:#eef2f6;font-family:Arial}
-.container{max-width:500px;margin:auto;padding:15px}
-.card{background:white;padding:16px;border-radius:14px;box-shadow:0 6px 16px rgba(0,0,0,0.08)}
-
-h1{font-family:'Century Gothic';font-weight:bold}
-
-label{font-size:13px;font-weight:bold;margin-top:10px;display:block}
-
-input,select,textarea{
-width:100%;padding:9px;border-radius:10px;border:1px solid #d1d5db
+body{
+  margin:0;
+  background:#eef2f6;
+  font-family:Arial, sans-serif;
+  color:#222;
 }
 
-textarea{height:70px}
+.container{
+  max-width:520px;
+  margin:auto;
+  padding:16px;
+}
 
-.btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.card{
+  background:#fff;
+  padding:18px;
+  border-radius:16px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.08);
+}
 
-button{padding:11px;border-radius:10px;border:none;font-weight:bold}
+h1,h3,label,th{
+  font-family:"Century Gothic", Arial, sans-serif;
+  font-weight:bold;
+}
 
-.btn-save{background:#2f6edb;color:white}
-.btn-sync{background:#198754;color:white}
+h1{
+  margin:0 0 12px;
+  font-size:22px;
+}
 
-table{width:100%;border-collapse:collapse;margin-top:10px}
-th{background:#198754;color:white;font-family:'Century Gothic';padding:8px}
-td{padding:8px;border-bottom:1px solid #eee}
+h3{
+  margin:18px 0 10px;
+  font-size:18px;
+}
 
-tr:hover{background:#f3f4f6}
+label{
+  display:block;
+  margin:10px 0 6px;
+  font-size:13px;
+}
 
-#mensaje{margin-top:10px}
+input,select,textarea{
+  width:100%;
+  max-width:100%;
+  padding:10px 12px;
+  border:1px solid #cfd6dd;
+  border-radius:12px;
+  font-size:14px;
+  font-family:Arial, sans-serif;
+  background:#fff;
+}
+
+textarea{
+  height:88px;
+  resize:vertical;
+}
+
+.readonly{
+  background:#f3f4f6;
+}
+
+.row-2{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.btns{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:14px;
+}
+
+button{
+  padding:11px 12px;
+  border:none;
+  border-radius:12px;
+  font-weight:bold;
+  font-family:Arial, sans-serif;
+  cursor:pointer;
+}
+
+.btn-save{
+  background:#2f6edb;
+  color:#fff;
+}
+
+.btn-sync{
+  background:#198754;
+  color:#fff;
+}
+
+.btn-refresh{
+  background:#198754;
+  color:#fff;
+  margin-top:10px;
+  width:100%;
+}
+
+#mensaje{
+  margin-top:12px;
+  font-size:13px;
+}
+
+.table-wrap{
+  margin-top:12px;
+  overflow-x:auto;
+  border-radius:12px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  background:#fff;
+  font-family:Arial, sans-serif;
+  font-size:13px;
+}
+
+th{
+  background:#198754;
+  color:#fff;
+  padding:10px 8px;
+  white-space:nowrap;
+}
+
+td{
+  padding:10px 8px;
+  border-bottom:1px solid #e5e7eb;
+  vertical-align:middle;
+}
+
+tr:hover{
+  background:#f9fafb;
+}
+
+.badge{
+  display:inline-block;
+  padding:4px 10px;
+  border-radius:999px;
+  color:#fff;
+  font-weight:bold;
+  font-size:12px;
+  white-space:nowrap;
+}
+
+.badge-operativo{
+  background:#198754;
+}
+
+.badge-inoperativo{
+  background:#dc3545;
+}
+
+.badge-mantenimiento{
+  background:#d39e00;
+}
+
+.small-note{
+  font-size:12px;
+  color:#666;
+  margin-top:6px;
+}
+
+@media (max-width:480px){
+  .row-2{
+    grid-template-columns:1fr;
+  }
+}
 </style>
 </head>
 
 <body>
 <div class="container">
-<div class="card">
+  <div class="card">
 
-<h1>Reporte Equipos</h1>
+    <h1>Reporte Equipos</h1>
 
-<label>Tipo</label>
-<select id="tipo">
-<option>Entrada</option>
-<option>Salida</option>
-</select>
-
-<label>DNI</label>
-<input id="dni">
-
-<label>Guardia (auto)</label>
-<input id="guardia" readonly>
-
-<label>Labor</label>
-<input id="labor">
-
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-  <div>
-    <label>Equipo</label>
-    <input id="equipo">
-  </div>
-
-  <div>
-    <label>Estado</label>
-    <select id="estado">
-      <option>Operativo</option>
-      <option>Inoperativo</option>
-      <option>Mantenimiento</option>
+    <label for="tipo">Tipo</label>
+    <select id="tipo">
+      <option value="Entrada">Entrada</option>
+      <option value="Salida">Salida</option>
     </select>
+
+    <div class="row-2">
+      <div>
+        <label for="guardia">Guardia (auto)</label>
+        <input id="guardia" class="readonly" readonly>
+      </div>
+      <div>
+        <label for="labor">Labor</label>
+        <input id="labor">
+      </div>
+    </div>
+
+    <div class="row-2">
+      <div>
+        <label for="equipo">Equipo</label>
+        <input id="equipo">
+      </div>
+      <div>
+        <label for="estado">Estado</label>
+        <select id="estado">
+          <option value="Operativo">Operativo</option>
+          <option value="Inoperativo">Inoperativo</option>
+          <option value="Mantenimiento">Mantenimiento</option>
+        </select>
+      </div>
+    </div>
+
+    <label for="dni">DNI</label>
+    <input id="dni">
+
+    <label for="obs">Observación</label>
+    <textarea id="obs"></textarea>
+
+    <div class="btns">
+      <button class="btn-save" onclick="guardar()">Guardar</button>
+      <button class="btn-sync" onclick="sincronizar()">Sincronizar</button>
+    </div>
+
+    <div id="mensaje"></div>
+
+    <hr style="margin:18px 0;border:none;height:1px;background:#e5e7eb;">
+
+    <h3>Datos del Excel</h3>
+
+    <div class="row-2">
+      <div>
+        <label for="filtroGuardia">Guardia</label>
+        <select id="filtroGuardia" onchange="cargarTablaExcel()">
+          <option value="">Todas</option>
+          <option value="A">A</option>
+          <option value="B">B</option>
+          <option value="C">C</option>
+        </select>
+      </div>
+      <div>
+        <label for="filtroEstado">Estado</label>
+        <select id="filtroEstado" onchange="cargarTablaExcel()">
+          <option value="">Todos</option>
+          <option value="Operativo">Operativo</option>
+          <option value="Inoperativo">Inoperativo</option>
+          <option value="Mantenimiento">Mantenimiento</option>
+        </select>
+      </div>
+    </div>
+
+    <label for="filtroFecha">Fecha</label>
+    <input type="date" id="filtroFecha" onchange="cargarTablaExcel()">
+
+    <button class="btn-refresh" onclick="cargarTablaExcel()">Actualizar</button>
+
+    <div class="small-note">La tabla se filtra con la información real del Excel.</div>
+
+    <div class="table-wrap">
+      <div id="tablaResumen"></div>
+    </div>
+
   </div>
-</div>
-
-<label>Observación</label>
-<textarea id="obs"></textarea>
-
-<div class="btns">
-<button class="btn-save" onclick="guardar()">Guardar</button>
-<button class="btn-sync" onclick="sincronizar()">Sincronizar</button>
-</div>
-
-<hr>
-
-<h3>Datos del Excel</h3>
-
-<label>Guardia</label>
-<select id="filtroGuardia" onchange="cargarTablaExcel()">
-<option value="">Todas</option>
-<option>A</option>
-<option>B</option>
-<option>C</option>
-</select>
-
-<label>Estado</label>
-<select id="filtroEstado" onchange="cargarTablaExcel()">
-<option value="">Todos</option>
-<option>Operativo</option>
-<option>Inoperativo</option>
-<option>Mantenimiento</option>
-</select>
-
-<label>Fecha</label>
-<input type="date" id="filtroFecha" onchange="cargarTablaExcel()">
-
-<button onclick="cargarTablaExcel()">Actualizar</button>
-
-<div id="tablaResumen"></div>
-<div id="mensaje"></div>
-
-</div>
 </div>
 
 <script>
+const URL = "Phttps://script.google.com/macros/s/AKfycbxN4FNOtiJXoPsWY3JGnaU0ZO8nUKKhXQPNW1xklXpGU-Se1SwXb2vMQywWj_aFRNxe8Q/exec";
 
-const URL="https://script.google.com/macros/s/AKfycbzmVcfYrWTHi4EPcxXTf2s_-mBM64pUZpJgidkoL3oDn0WQqWgDdfB8YbreHFKdlxrQvw/exec";
-
-// FECHA LIMPIA
-function obtenerFecha(){
-const now=new Date()
-return `${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getFullYear()} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`
+// Fecha limpia
+function obtenerFecha() {
+  const now = new Date();
+  const dd = String(now.getDate()).padStart(2, "0");
+  const mm = String(now.getMonth() + 1).padStart(2, "0");
+  const yyyy = now.getFullYear();
+  const hh = String(now.getHours()).padStart(2, "0");
+  const mi = String(now.getMinutes()).padStart(2, "0");
+  const ss = String(now.getSeconds()).padStart(2, "0");
+  return `${dd}/${mm}/${yyyy} ${hh}:${mi}:${ss}`;
 }
 
-// GUARDIA AUTOMÁTICA
-function obtenerGuardia(){
-const now=new Date()
-const base=new Date("2026-04-15T07:00:00")
-const dias=Math.floor((now-base)/(1000*60*60*24))
-const ciclo=dias%21
-const esDia=now.getHours()>=7&&now.getHours()<19
-
-if(esDia){
-if(ciclo<7)return "B"
-else if(ciclo<14)return "C"
-else return "A"
-}else{
-if(ciclo<7)return "A"
-else if(ciclo<14)return "B"
-else return "C"
-}
+// Turno automático
+function obtenerTurno() {
+  const now = new Date();
+  const h = now.getHours();
+  return (h >= 7 && h < 19) ? "DIA" : "NOCHE";
 }
 
-// MOSTRAR GUARDIA
-setInterval(()=>{
-guardia.value=obtenerGuardia()
-},1000)
+// Guardia automática según tu lógica real:
+// Día 15/04/2026 -> B
+// Noche 15/04/2026 -> A
+// Día 16/04/2026 -> C
+function obtenerGuardia() {
+  const now = new Date();
+  const turno = obtenerTurno();
 
-// MENSAJE
-function mostrarMensaje(t){mensaje.textContent=t}
+  if (turno === "DIA") {
+    // ancla de días: 15/04/2026 = B
+    const baseDia = new Date("2026-04-15T07:00:00");
+    const hoyDia = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 7, 0, 0);
+    const diffDias = Math.floor((hoyDia - baseDia) / (1000 * 60 * 60 * 24));
+    const bloque = ((Math.floor(diffDias / 7) % 3) + 3) % 3;
 
-// GUARDAR
-function guardar(){
-let data={
-fecha:obtenerFecha(),
-tipo:tipo.value,
-dni:dni.value,
-equipo:equipo.value,
-labor:labor.value,
-estado:estado.value,
-guardia:obtenerGuardia(),
-turno:"",
-observacion:obs.value
+    if (bloque === 0) return "B";
+    if (bloque === 1) return "C";
+    return "A";
+  } else {
+    // ancla de noches: noche del 15/04/2026 = A
+    // si es madrugada, sigue perteneciendo a la noche anterior
+    let fechaNoche = new Date(now);
+    if (now.getHours() < 7) {
+      fechaNoche.setDate(fechaNoche.getDate() - 1);
+    }
+
+    const baseNoche = new Date("2026-04-15T19:00:00");
+    const nocheRef = new Date(
+      fechaNoche.getFullYear(),
+      fechaNoche.getMonth(),
+      fechaNoche.getDate(),
+      19, 0, 0
+    );
+
+    const diffDias = Math.floor((nocheRef - baseNoche) / (1000 * 60 * 60 * 24));
+    const bloque = ((Math.floor(diffDias / 7) % 3) + 3) % 3;
+
+    if (bloque === 0) return "A";
+    if (bloque === 1) return "B";
+    return "C";
+  }
 }
 
-let arr=JSON.parse(localStorage.getItem("data")||"[]")
-arr.push(data)
-localStorage.setItem("data",JSON.stringify(arr))
-
-mostrarMensaje("Guardado")
-
-if(navigator.onLine)sincronizar()
+// Actualiza guardia visible
+function actualizarGuardiaVisible() {
+  document.getElementById("guardia").value = obtenerGuardia();
 }
 
-// SINCRONIZAR
-async function sincronizar(){
-let arr=JSON.parse(localStorage.getItem("data")||"[]")
-
-for(let r of arr){
-await fetch(URL,{
-method:"POST",
-headers:{"Content-Type":"text/plain"},
-body:JSON.stringify(r)
-})
+// Mensaje
+function mostrarMensaje(t) {
+  document.getElementById("mensaje").textContent = t;
 }
 
-localStorage.removeItem("data")
-mostrarMensaje("Sincronizado")
-cargarTablaExcel()
+// Guardar local
+function guardar() {
+  const data = {
+    fecha: obtenerFecha(),
+    tipo: document.getElementById("tipo").value,
+    dni: document.getElementById("dni").value,
+    equipo: document.getElementById("equipo").value,
+    labor: document.getElementById("labor").value,
+    estado: document.getElementById("estado").value,
+    guardia: obtenerGuardia(),
+    observacion: document.getElementById("obs").value
+  };
+
+  let arr = JSON.parse(localStorage.getItem("data") || "[]");
+  arr.push(data);
+  localStorage.setItem("data", JSON.stringify(arr));
+
+  mostrarMensaje("Guardado");
+
+  if (navigator.onLine) {
+    sincronizar();
+  }
 }
 
-// AUTO
-window.addEventListener("online",()=>sincronizar())
+// Sincronizar
+async function sincronizar() {
+  const arr = JSON.parse(localStorage.getItem("data") || "[]");
 
-// TABLA
-async function cargarTablaExcel(){
-const res=await fetch(URL)
-const data=await res.json()
+  if (arr.length === 0) {
+    mostrarMensaje("No hay registros pendientes.");
+    return;
+  }
 
-let g=filtroGuardia.value
-let e=filtroEstado.value
-let f=filtroFecha.value
+  try {
+    for (const r of arr) {
+      await fetch(URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify(r)
+      });
+    }
 
-let html="<table><tr><th>Equipo</th><th>Labor</th><th>Estado</th><th>Obs</th><th>Guardia</th><th>Fecha</th></tr>"
+    localStorage.removeItem("data");
+    mostrarMensaje("Sincronizado");
+    cargarTablaExcel();
 
-data.slice(1).forEach(r=>{
-
-let fecha=r[0]
-let estado=r[6]
-let guardia=r[7]
-
-let ok=true
-
-if(f){
-let p=fecha.split("/")
-let iso=`${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`
-ok=(iso===f)
+  } catch (err) {
+    console.error(err);
+    mostrarMensaje("Error al sincronizar");
+  }
 }
 
-if((!g||guardia==g)&&(!e||estado==e)&&ok){
+// Auto sync al volver internet
+window.addEventListener("online", () => {
+  sincronizar();
+});
 
-let color="#999"
-if(estado==="Operativo")color="#198754"
-else if(estado==="Inoperativo")color="#dc3545"
-else color="#ffc107"
+// Tabla desde Excel
+async function cargarTablaExcel() {
+  try {
+    const res = await fetch(URL);
+    const data = await res.json();
 
-html+=`
-<tr>
-<td>${r[4]}</td>
-<td>${r[5]}</td>
-<td><span style="background:${color};color:white;padding:4px 8px;border-radius:20px;font-weight:bold">${estado}</span></td>
-<td>${r[9]}</td>
-<td>${guardia}</td>
-<td>${fecha}</td>
-</tr>`
+    const g = document.getElementById("filtroGuardia").value;
+    const e = document.getElementById("filtroEstado").value;
+    const f = document.getElementById("filtroFecha").value;
+
+    let html = `
+      <table>
+        <tr>
+          <th>Equipo</th>
+          <th>Labor</th>
+          <th>Estado</th>
+          <th>Obs</th>
+        </tr>
+    `;
+
+    data.slice(1).forEach(r => {
+      // columnas Excel:
+      // 0 Fecha
+      // 1 Hora
+      // 2 Tipo
+      // 3 DNI
+      // 4 Equipo
+      // 5 Labor
+      // 6 Estado
+      // 7 Guardia
+      // 8 Observacion
+
+      const fechaExcel = r[0] || "";
+      const estado = r[6] || "";
+      const guardia = r[7] || "";
+
+      let fechaOK = true;
+
+      if (f && fechaExcel) {
+        const p = fechaExcel.split("/");
+        if (p.length === 3) {
+          const iso = `${p[2]}-${String(p[1]).padStart(2, "0")}-${String(p[0]).padStart(2, "0")}`;
+          fechaOK = (iso === f);
+        } else {
+          fechaOK = false;
+        }
+      }
+
+      if ((!g || guardia === g) && (!e || estado === e) && fechaOK) {
+        let badgeClass = "";
+        if (estado === "Operativo") badgeClass = "badge badge-operativo";
+        else if (estado === "Inoperativo") badgeClass = "badge badge-inoperativo";
+        else badgeClass = "badge badge-mantenimiento";
+
+        html += `
+          <tr>
+            <td>${r[4] || ""}</td>
+            <td>${r[5] || ""}</td>
+            <td><span class="${badgeClass}">${estado}</span></td>
+            <td>${r[8] || ""}</td>
+          </tr>
+        `;
+      }
+    });
+
+    html += `</table>`;
+    document.getElementById("tablaResumen").innerHTML = html;
+
+  } catch (err) {
+    console.error(err);
+    mostrarMensaje("Error al cargar la tabla");
+  }
 }
-})
 
-html+="</table>"
-tablaResumen.innerHTML=html
-}
-
+// Inicial
+actualizarGuardiaVisible();
+setInterval(actualizarGuardiaVisible, 30000);
 </script>
 
 </body>
