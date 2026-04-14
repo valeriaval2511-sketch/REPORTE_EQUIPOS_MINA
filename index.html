@@ -367,9 +367,13 @@ tr:hover{
       <input type="date" id="filtroFecha" onchange="cargarTablaExcel()">
     </div>
 
-    <button type="button" class="btn-tabla" onclick="cargarTablaExcel()">Actualizar tabla</button>
+    <button type="button" class="btn-tabla" onclick="cargarTablaExcel()" style="display:block;width:100%;">
+      Actualizar tabla
+    </button>
 
-    <div class="table-wrap">
+    <div style="width:100%;height:10px;"></div>
+      
+    <div class="table-wrap" style="display:block;width:100%;">
       <div id="tablaResumen"></div>
     </div>
 
