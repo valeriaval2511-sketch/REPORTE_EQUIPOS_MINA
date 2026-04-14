@@ -90,7 +90,8 @@ textarea{
 .row{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:10px;
+  gap:12px;
+  align-items:end;
 }
 
 .btns{
@@ -147,7 +148,7 @@ table{
   background:#fff;
   font-family:Arial, sans-serif;
   font-size:12px;
-  table-layout:fixed;
+  table-layout:auto;
 }
 
 th{
@@ -166,6 +167,7 @@ td{
   text-align:center;
   font-size:12px;
   word-wrap:break-word;
+  white-space:nowrap;
 }
 
 tr:hover{
@@ -174,14 +176,12 @@ tr:hover{
 
 .badge{
   display:inline-block;
-  min-width:98px;
-  text-align:center;
   padding:4px 10px;
   border-radius:999px;
   color:#fff;
   font-weight:bold;
   font-size:11px;
-  line-height:1.2;
+  white-space:nowrap;
 }
 
 .badge-operativo{
@@ -353,8 +353,10 @@ tr:hover{
         </select>
       </div>
 
-    <label for="filtroFecha">Filtrar por fecha</label>
-    <input type="date" id="filtroFecha" onchange="cargarTablaExcel()">
+    <div style="grid-column:1 / -1;">
+      <label for="filtroFecha">Filtrar por fecha</label>
+      <input type="date" id="filtroFecha" onchange="cargarTablaExcel()">
+    </div>
 
     <button type="button" class="btn-tabla" onclick="cargarTablaExcel()">Actualizar tabla</button>
 
