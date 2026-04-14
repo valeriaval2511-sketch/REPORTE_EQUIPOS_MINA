@@ -417,18 +417,16 @@ function obtenerGuardia() {
 
   const esDia = hora >= 7 && hora < 19;
 
-  // Ajuste operativo (madrugada cuenta como día anterior)
   const fecha = new Date(ahora);
   if (hora < 7) {
     fecha.setDate(fecha.getDate() - 1);
   }
 
-  // Base: 15 abril 2026 = B día
-  const base = new Date("2026-04-15T07:00:00");
+  // 🔥 BASE CORRECTA
+  const base = new Date("2026-04-14T07:00:00");
 
   const diffDias = Math.floor((fecha - base) / (1000 * 60 * 60 * 24));
 
-  // ciclo de 21 días
   const ciclo = ((diffDias % 21) + 21) % 21;
 
   if (ciclo < 7) {
