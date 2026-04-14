@@ -1,4 +1,4 @@
-const CACHE = "app-mina-v1";
+const CACHE = "app-mina-v2";
 
 const ASSETS = [
   "./",
@@ -21,6 +21,10 @@ self.addEventListener("activate", e => {
 
 self.addEventListener("fetch", e => {
   e.respondWith(
-    fetch(e.request).catch(() => caches.match(e.request))
+    caches.match(e.request).then(res => {
+      return res || fetch(e.request).catch(() => {
+        return caches.match("./index.html");
+      });
+    })
   );
 });
