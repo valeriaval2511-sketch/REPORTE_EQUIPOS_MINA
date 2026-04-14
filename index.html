@@ -388,7 +388,7 @@ tr:hover{
 </div>
 
 <script>
-const URL = "https://script.google.com/macros/s/AKfycbwGotK29_sqYqfVoVMnTm3zpUWyZboRDKxgcRKXOm0YboE4Kf3YFnHeKlnCxKbAaNPtag/exec";
+const URL = "https://script.google.com/macros/s/AKfycbzGMqcrhYRMPCSRjDx5W0LFMunXITi9N-FaDyS7tcSuE_UpmveOScwqLj5_-l5EfVarYw/exec";
 
 let listasMaestras = {
   dni: [],
@@ -409,29 +409,57 @@ function obtenerFecha() {
 }
 
 // Guardia automática
+  
 function obtenerGuardia() {
-  let now = new Date();
-  let h = now.getHours();
-  let esDia = h >= 7 && h < 19;
 
-  let base = new Date(esDia ? "2026-04-15T07:00:00" : "2026-04-15T19:00:00");
+  const ahora = new Date();
 
-  if (!esDia && h < 7) {
-    now.setDate(now.getDate() - 1);
+  const hora = ahora.getHours();
+  const esDia = hora >= 7 && hora < 19;
+
+  // Ajuste: antes de 7am cuenta como día anterior
+  let fecha = new Date(ahora);
+  if (hora < 7) {
+    fecha.setDate(fecha.getDate() - 1);
   }
 
-  let diff = Math.floor((now - base) / (1000 * 60 * 60 * 24));
-  let bloque = ((Math.floor(diff / 7) % 3) + 3) % 3;
+  // Base
+  const inicio = new Date("2026-04-15T07:00:00");
 
-  if (esDia) {
-    if (bloque === 0) return "B";
-    if (bloque === 1) return "C";
-    return "A";
-  } else {
-    if (bloque === 0) return "A";
-    if (bloque === 1) return "B";
-    return "C";
+  const diffDias = Math.floor((fecha - inicio) / (1000 * 60 * 60 * 24));
+
+  // 🔥 TRAMOS REALES
+
+  // 15–21 abril
+  if (diffDias >= 0 && diffDias <= 6) {
+    return esDia ? "B" : "A";
   }
+
+  // 22–28 abril
+  if (diffDias >= 7 && diffDias <= 13) {
+    return esDia ? "C" : "B";
+  }
+
+  // 29 abril
+  if (diffDias === 14) {
+    return esDia ? "A" : "C";
+  }
+
+  // 30 abril → reinicio ciclo
+  if (diffDias >= 15) {
+
+    const ciclo = ((diffDias - 15) % 21 + 21) % 21;
+
+    if (ciclo < 7) {
+      return esDia ? "B" : "C";
+    } else if (ciclo < 14) {
+      return esDia ? "A" : "B";
+    } else {
+      return esDia ? "C" : "A";
+    }
+  }
+
+  return "N/A";
 }
 
 // Actualizar guardia visible
