@@ -6,26 +6,34 @@
 <title>Reporte Mina</title>
 
 <style>
-body {margin:0;background:#f4f6f8;font-family:Arial}
+body {margin:0;background:#eef2f6;font-family:Arial}
 .container {max-width:500px;margin:auto;padding:15px}
-.card {background:white;padding:15px;border-radius:12px;box-shadow:0 4px 10px rgba(0,0,0,0.1)}
+.card {background:white;padding:16px;border-radius:14px;box-shadow:0 6px 16px rgba(0,0,0,0.08)}
 
-h1 {font-size:22px;margin:0}
+h1 {font-family:'Century Gothic';font-weight:bold;font-size:22px}
 label {font-size:13px;font-weight:bold;margin-top:10px;display:block}
 
 input, select, textarea {
-  width:100%;padding:8px;border-radius:8px;border:1px solid #ccc;font-size:14px
+  width:100%;padding:9px;border-radius:10px;border:1px solid #d1d5db;font-size:14px
 }
+
 textarea {height:70px}
 
-.btns {display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-button {padding:10px;border:none;border-radius:8px;font-weight:bold}
-.btn-save {background:#1f6feb;color:white}
-.btn-sync {background:#16a34a;color:white}
+.btns {display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+button {padding:11px;border-radius:10px;font-weight:bold;border:none}
 
-table {width:100%;border-collapse:collapse;font-size:12px;margin-top:10px}
-th {background:#1f6feb;color:white;padding:6px}
-td {padding:6px;border-bottom:1px solid #ddd}
+.btn-save {background:#2f6edb;color:white}
+.btn-sync {background:#198754;color:white}
+
+table {width:100%;border-collapse:collapse;margin-top:10px}
+th {
+  background:#198754;
+  color:white;
+  font-family:'Century Gothic';
+  padding:8px;
+}
+td {padding:8px;border-bottom:1px solid #eee}
+tr:hover {background:#f3f4f6}
 
 #mensaje {margin-top:10px;font-size:13px}
 </style>
@@ -56,6 +64,7 @@ td {padding:6px;border-bottom:1px solid #ddd}
 <select id="estado">
 <option>Operativo</option>
 <option>Inoperativo</option>
+<option>Mantenimiento</option>
 </select>
 
 <label>Guardia</label>
@@ -90,12 +99,15 @@ td {padding:6px;border-bottom:1px solid #ddd}
 <option value="">Todos</option>
 <option>Operativo</option>
 <option>Inoperativo</option>
+<option>Mantenimiento</option>
 </select>
+
+<label>Fecha</label>
+<input type="date" id="filtroFecha" onchange="cargarTablaExcel()">
 
 <button onclick="cargarTablaExcel()">Actualizar</button>
 
 <div id="tablaResumen"></div>
-
 <div id="mensaje"></div>
 
 </div>
@@ -103,129 +115,115 @@ td {padding:6px;border-bottom:1px solid #ddd}
 
 <script>
 
-const URL = "https://script.google.com/macros/s/AKfycbyLx0dJJ1y3tVI3gu81PS0WLCVT7RwSog_rS7JG8H7AGzwq1wm0Y-UFu_vVmANBQz8HuA/exec";
+const URL = "https://script.google.com/macros/s/AKfycbyvHMhLivrnkPNzOAe6v3Gy5Toi2FPjDqddvwcJ4ykqBuMktkCqp18ndbRVtLQzTfExQw/exec";
 
-// MENSAJE
-function mostrarMensaje(t){
-  mensaje.textContent = t;
-}
+function mostrarMensaje(t){mensaje.textContent=t}
 
 // GUARDAR LOCAL
 function guardar(){
-  let data = {
-    fecha: new Date().toLocaleString(),
-    tipo: tipo.value,
-    dni: dni.value,
-    equipo: equipo.value,
-    labor: labor.value,
-    estado: estado.value,
-    guardia: guardia.value,
-    turno: "",
-    observacion: obs.value
-  };
+  let data={
+    fecha:new Date().toLocaleString("es-PE"),
+    tipo:tipo.value,
+    dni:dni.value,
+    equipo:equipo.value,
+    labor:labor.value,
+    estado:estado.value,
+    guardia:guardia.value,
+    turno:"",
+    observacion:obs.value
+  }
 
-  let arr = JSON.parse(localStorage.getItem("data") || "[]");
-  arr.push(data);
-  localStorage.setItem("data", JSON.stringify(arr));
+  let arr=JSON.parse(localStorage.getItem("data")||"[]")
+  arr.push(data)
+  localStorage.setItem("data",JSON.stringify(arr))
 
-  mostrarMensaje("Guardado");
+  mostrarMensaje("Guardado")
 
   if(navigator.onLine){
-    sincronizar();
+    sincronizar()
   }
 }
 
 // SINCRONIZAR
 async function sincronizar(){
-  let arr = JSON.parse(localStorage.getItem("data") || "[]");
+  let arr=JSON.parse(localStorage.getItem("data")||"[]")
 
   for(let r of arr){
     await fetch(URL,{
       method:"POST",
       headers:{"Content-Type":"text/plain"},
-      body: JSON.stringify(r)
-    });
+      body:JSON.stringify(r)
+    })
   }
 
-  localStorage.removeItem("data");
-  mostrarMensaje("Sincronizado con Excel");
-  cargarTablaExcel();
+  localStorage.removeItem("data")
+  mostrarMensaje("Sincronizado con Excel")
+  cargarTablaExcel()
 }
 
 // AUTO SYNC
-window.addEventListener("online", () => {
-  mostrarMensaje("Conexión recuperada...");
-  sincronizar();
-});
+window.addEventListener("online",()=>{
+  mostrarMensaje("Conexión recuperada...")
+  sincronizar()
+})
 
 // TABLA DESDE EXCEL
 async function cargarTablaExcel(){
-  try{
-    const res = await fetch(URL);
-    const data = await res.json();
+  const res=await fetch(URL)
+  const data=await res.json()
 
-    let g = filtroGuardia.value;
-    let e = filtroEstado.value;
+  let g=filtroGuardia.value
+  let e=filtroEstado.value
+  let f=filtroFecha.value
 
-    let html = `
-    <table style="width:100%; border-collapse:collapse; margin-top:10px;">
-      <tr style="
-        background:#0f5132;
-        color:white;
-        font-family:'Century Gothic';
-        font-weight:bold;
-      ">
-        <th style="padding:8px">Equipo</th>
-        <th style="padding:8px">Labor</th>
-        <th style="padding:8px">Estado</th>
-        <th style="padding:8px">Obs</th>
-        <th style="padding:8px">Guardia</th>
-      </tr>
-    `;
+  let html="<table><tr><th>Equipo</th><th>Labor</th><th>Estado</th><th>Obs</th><th>Guardia</th><th>Fecha</th></tr>"
 
-    data.slice(1).forEach(r=>{
+  data.slice(1).forEach(r=>{
 
-      if((!g || r[6]==g) && (!e || r[5]==e)){
+    let fechaExcel=r[0]
+    let estado=r[6]
+    let guardia=r[7]
 
-        let colorEstado = "#fff";
+    let fechaOK=true
 
-        if(r[5] === "Operativo"){
-          colorEstado = "#198754"; // verde empresa
-        } 
-        else if(r[5] === "Inoperativo"){
-          colorEstado = "#dc3545"; // rojo
-        } 
-        else {
-          colorEstado = "#ffc107"; // amarillo
-        }
+    if(f){
+      let p=fechaExcel.split("/")
+      let iso=`${p[2]}-${p[1].padStart(2,"0")}-${p[0].padStart(2,"0")}`
+      fechaOK=(iso===f)
+    }
 
-        html += `
-        <tr style="font-family:Arial; border-bottom:1px solid #ddd">
-          <td style="padding:6px">${r[3]}</td>
-          <td style="padding:6px">${r[4]}</td>
-          <td style="
-            padding:6px;
+    if((!g||guardia==g)&&(!e||estado==e)&&fechaOK){
+
+      let color="#999"
+      if(estado==="Operativo") color="#198754"
+      else if(estado==="Inoperativo") color="#dc3545"
+      else color="#ffc107"
+
+      html+=`
+      <tr>
+        <td>${r[4]}</td>
+        <td>${r[5]}</td>
+        <td>
+          <span style="
+            background:${color};
             color:white;
+            padding:4px 8px;
+            border-radius:20px;
             font-weight:bold;
-            background:${colorEstado};
-            border-radius:6px;
-            text-align:center;
           ">
-            ${r[5]}
-          </td>
-          <td style="padding:6px">${r[8]}</td>
-          <td style="padding:6px">${r[6]}</td>
-        </tr>
-        `;
-      }
-    });
+            ${estado}
+          </span>
+        </td>
+        <td>${r[9]}</td>
+        <td>${guardia}</td>
+        <td>${fechaExcel}</td>
+      </tr>
+      `
+    }
+  })
 
-    html += "</table>";
-    tablaResumen.innerHTML = html;
-
-  }catch(err){
-    console.error(err);
-  }
+  html+="</table>"
+  tablaResumen.innerHTML=html
 }
 
 </script>
