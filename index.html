@@ -483,18 +483,17 @@ async function cargarListasMaestras() {
 
     listasMaestras = data;
 
-    // GUARDAR EN LOCAL
+    // GUARDAR LOCAL
     localStorage.setItem("listas", JSON.stringify(data));
 
-  } catch (err) {
+  } catch (error) {
 
-    console.warn("Sin conexión, usando listas guardadas");
+    console.warn("Offline → usando listas guardadas");
 
-    // USAR LISTAS GUARDADAS
-    const local = localStorage.getItem("listas");
+    const guardado = localStorage.getItem("listas");
 
-    if (local) {
-      listasMaestras = JSON.parse(local);
+    if (guardado) {
+      listasMaestras = JSON.parse(guardado);
     } else {
       listasMaestras = { dni: [], equipos: [], labores: [] };
     }
@@ -789,18 +788,17 @@ window.addEventListener("offline", () => {
 });
 
 // Inicial
+
 window.addEventListener("load", async () => {
+
+  await cargarListasMaestras(); // OLO UNA VEZ
 
   actualizarGuardiaVisible();
   actualizarPendientes();
   verificarConexion();
 
-  //ESPERAR LISTAS
-  await cargarListasMaestras();
+  console.log("LISTAS CARGADAS:", listasMaestras);
 
-  console.log("LISTAS CARGADAS:", listasMaestras); // DEBUG
-
-  // ACTIVAR AUTOCOMPLETE DESPUÉS
   inicializarAutocomplete("dni", "listaDni", "dni");
   inicializarAutocomplete("equipo", "listaEquipo", "equipos");
   inicializarAutocomplete("labor", "listaLabor", "labores");
@@ -809,9 +807,9 @@ window.addEventListener("load", async () => {
 
   document.getElementById("dni").addEventListener("input", () => {
     const valor = dni.value.trim();
-  
+
     const encontrado = listasMaestras.dni.find(x => x.dni === valor);
-  
+
     document.getElementById("nombre").value = encontrado ? encontrado.nombre : "";
   });
 
