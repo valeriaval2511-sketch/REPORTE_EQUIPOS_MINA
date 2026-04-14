@@ -313,6 +313,9 @@ tr:hover{
       <div id="listaDni" class="autocomplete-list"></div>
     </div>
 
+    <label>Nombre</label>
+      <input id="nombre" readonly>
+
     <label for="obs">Observación</label>
     <textarea id="obs"></textarea>
 
@@ -364,7 +367,7 @@ tr:hover{
 </div>
 
 <script>
-const URL = "https://script.google.com/macros/s/AKfycbz5wv_wItDwvVGwTNw4a3GyKtLsIVU4G6geFhNgM-1F-jpVs-rpaqoNNjT0T0GY4TLnFQ/exec";
+const URL = "https://script.google.com/macros/s/AKfycby2O7-r4QKPwzypuY57nszn8qAiiP2FCPq_S3wc_6Kqs0N2MpLaTV2k9s-4Cdf25BGwKg/exec";
 
 let listasMaestras = {
   dni: [],
@@ -490,9 +493,10 @@ function inicializarAutocomplete(inputId, listaId, tipoLista) {
     filtrados.forEach(item => {
       const div = document.createElement("div");
       div.className = "autocomplete-item";
-      div.textContent = item;
+      div.textContent = item.dni + " - " + item.nombre;
       div.onclick = () => {
-        input.value = item;
+        input.value = item.dni;
+        document.getElementById("nombre").value = item.nombre;
         lista.style.display = "none";
       };
       lista.appendChild(div);
@@ -732,6 +736,14 @@ window.addEventListener("load", async () => {
   inicializarAutocomplete("labor", "listaLabor", "labores");
 
   cargarTablaExcel();
+
+  document.getElementById("dni").addEventListener("input", () => {
+    const valor = dni.value.trim();
+  
+    const encontrado = listasMaestras.dni.find(x => x.dni === valor);
+  
+    document.getElementById("nombre").value = encontrado ? encontrado.nombre : "";
+  });
 
   const arr = JSON.parse(localStorage.getItem("data") || "[]");
   if (navigator.onLine && arr.length > 0) {
