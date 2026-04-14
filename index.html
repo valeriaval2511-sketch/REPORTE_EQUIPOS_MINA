@@ -507,11 +507,7 @@ function inicializarAutocomplete(inputId, listaId, tipoLista) {
       } else {
         div.textContent = item;
       }
-      div.onclick = () => {
-        input.value = item.dni;
-        document.getElementById("nombre").value = item.nombre;
-        lista.style.display = "none";
-      };
+
       div.onclick = () => {
         if (tipoLista === "dni") {
           input.value = item.dni;
