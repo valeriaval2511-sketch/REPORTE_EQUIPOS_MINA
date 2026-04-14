@@ -683,8 +683,8 @@ async function cargarTablaExcel() {
 
     data.slice(1).forEach(r => {
       const fecha = r[0] || "";
-      const estado = r[6] || "";
-      const guardia = r[7] || "";
+      const estado = r[7] || "";
+      const guardia = r[8] || "";
 
       let fechaOK = true;
 
@@ -714,10 +714,10 @@ async function cargarTablaExcel() {
 
         html += `
           <tr>
-            <td>${r[4] || ""}</td>
             <td>${r[5] || ""}</td>
+            <td>${r[6] || ""}</td>
             <td><span class="badge ${badgeClass}">${estado}</span></td>
-            <td>${r[8] || ""}</td>
+            <td>${r[9] || ""}</td>
           </tr>
         `;
         filas++;
