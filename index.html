@@ -590,6 +590,7 @@ function existeEnLista(valor, tipoLista) {
 // Guardar local
 function guardar() {
   const data = {
+    id: Date.now().toString() + "_" + Math.floor(Math.random() * 1000),
     fecha: obtenerFecha(),
     tipo: document.getElementById("tipo").value,
     dni: document.getElementById("dni").value.trim(),
@@ -694,92 +695,82 @@ async function sincronizar() {
 }
 
 // Cargar tabla desde Excel
-async function cargarTablaExcel() {
-  try {
-    const res = await fetch(URL);
-    const data = await res.json();
-
-    if (!Array.isArray(data)) {
-      document.getElementById("tablaResumen").innerHTML =
-        "<p style='font-size:13px;color:#991b1b;'>No se pudo cargar la tabla</p>";
-      return;
-    }
-
-    const g = document.getElementById("filtroGuardia").value;
-    const e = document.getElementById("filtroEstado").value;
-    const f = document.getElementById("filtroFecha").value;
-
-    let html = `
-      <table>
-        <tr>
-          <th>Equipo</th>
-          <th>Labor</th>
-          <th>Estado</th>
-          <th>Obs</th>
-        </tr>
-    `;
-
-    let filas = 0;
-
-    data.slice(1).forEach(r => {
-      const fecha = r[0] || "";
-      const estado = r[8] || "";
-      const guardia = r[9] || "";
-
-      let fechaOK = true;
-
-      if (f && fecha) {
-        const p = fecha.split("/");
-        if (p.length === 3) {
-          const iso = `${p[2]}-${String(p[1]).padStart(2, "0")}-${String(p[0]).padStart(2, "0")}`;
-          fechaOK = (iso === f);
-        } else {
-          fechaOK = false;
-        }
-      }
-
-      if ((!g || guardia === g) && (!e || estado === e) && fechaOK) {
-        let badgeClass = "badge-mantenimiento";
-        if (estado === "Operativo") {
-          badgeClass = "badge-operativo";
-        } else if (estado === "Inoperativo") {
-          badgeClass = "badge-inoperativo";
-        } else if (
-          estado === "Mantenimiento preven." ||
-          estado === "Mantenimiento correct." ||
-          estado === "Stand by"
-        ) {
-          badgeClass = "badge-mantenimiento";
-        }
-
-        html += `
-          <tr>
-            <td>${r[5] || ""}</td>
-            <td>${r[6] || ""}</td>
-            <td><span class="badge ${badgeClass}">${estado}</span></td>
-            <td>${r[10] || ""}</td>
-          </tr>
-        `;
-        filas++;
-      }
-    });
-
-    html += "</table>";
-
-    if (filas === 0) {
-      document.getElementById("tablaResumen").innerHTML =
-        "<p style='font-size:13px;color:#666;text-align:center;margin-top:10px;'>No hay datos para esos filtros</p>";
-    } else {
-      document.getElementById("tablaResumen").innerHTML = html;
-    }
-
-  } catch (err) {
-    console.error(err);
+function renderTabla(data) {
+  if (!Array.isArray(data)) {
     document.getElementById("tablaResumen").innerHTML =
-      "<p style='font-size:13px;color:#991b1b;text-align:center;margin-top:10px;'>Error al cargar la tabla</p>";
+      "<p style='font-size:13px;color:#991b1b;'>No se pudo cargar la tabla</p>";
+    return;
+  }
+
+  const g = document.getElementById("filtroGuardia").value;
+  const e = document.getElementById("filtroEstado").value;
+  const f = document.getElementById("filtroFecha").value;
+
+  let html = `
+    <table>
+      <tr>
+        <th>Equipo</th>
+        <th>Labor</th>
+        <th>Estado</th>
+        <th>Obs</th>
+      </tr>
+  `;
+
+  let filas = 0;
+
+  data.slice(1).forEach(r => {
+    const fecha = r[0] || "";
+    const estado = r[8] || "";
+    const guardia = r[9] || "";
+
+    let fechaOK = true;
+
+    if (f && fecha) {
+      const p = fecha.split("/");
+      if (p.length === 3) {
+        const iso = `${p[2]}-${String(p[1]).padStart(2, "0")}-${String(p[0]).padStart(2, "0")}`;
+        fechaOK = (iso === f);
+      } else {
+        fechaOK = false;
+      }
+    }
+
+    if ((!g || guardia === g) && (!e || estado === e) && fechaOK) {
+      let badgeClass = "badge-mantenimiento";
+
+      if (estado === "Operativo") {
+        badgeClass = "badge-operativo";
+      } else if (estado === "Inoperativo") {
+        badgeClass = "badge-inoperativo";
+      } else if (
+        estado === "Mantenimiento preven." ||
+        estado === "Mantenimiento correct." ||
+        estado === "Stand by"
+      ) {
+        badgeClass = "badge-mantenimiento";
+      }
+
+      html += `
+        <tr>
+          <td>${r[5] || ""}</td>
+          <td>${r[6] || ""}</td>
+          <td><span class="badge ${badgeClass}">${estado}</span></td>
+          <td>${r[10] || ""}</td>
+        </tr>
+      `;
+      filas++;
+    }
+  });
+
+  html += "</table>";
+
+  if (filas === 0) {
+    document.getElementById("tablaResumen").innerHTML =
+      "<p style='font-size:13px;color:#666;text-align:center;margin-top:10px;'>No hay datos para esos filtros</p>";
+  } else {
+    document.getElementById("tablaResumen").innerHTML = html;
   }
 }
-
 // Eventos de conexión
 window.addEventListener("online", () => {
   actualizarEstado("online");
@@ -798,11 +789,11 @@ window.addEventListener("offline", () => {
 
 window.addEventListener("load", async () => {
 
-  await cargarListasMaestras(); // OLO UNA VEZ
-
   actualizarGuardiaVisible();
   actualizarPendientes();
   verificarConexion();
+
+  await cargarListasMaestras();
 
   console.log("LISTAS CARGADAS:", listasMaestras);
 
@@ -810,10 +801,10 @@ window.addEventListener("load", async () => {
   inicializarAutocomplete("equipo", "listaEquipo", "equipos");
   inicializarAutocomplete("labor", "listaLabor", "labores");
 
-  cargarTablaExcel();
+  await cargarTablaExcel();
 
   document.getElementById("dni").addEventListener("input", () => {
-    const valor = dni.value.trim();
+    const valor = document.getElementById("dni").value.trim();
 
     const encontrado = listasMaestras.dni.find(x => x.dni === valor);
 
