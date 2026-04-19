@@ -1,13 +1,14 @@
-const CACHE = "app-mina-v4";
+const CACHE = "app-mina-v5";
 
 const ASSETS = [
-  "/",
-  "/index.html",
-  "/manifest.json",
-  "/icon-192.png",
-  "/icon-512.png"
+  "./",
+  "./index.html",
+  "./manifest.json",
+  "./icon-192.png",
+  "./icon-512.png"
 ];
 
+// INSTALAR
 self.addEventListener("install", e => {
   e.waitUntil(
     caches.open(CACHE).then(cache => cache.addAll(ASSETS))
@@ -15,14 +16,13 @@ self.addEventListener("install", e => {
   self.skipWaiting();
 });
 
+// ACTIVAR
 self.addEventListener("activate", e => {
   e.waitUntil(
     caches.keys().then(keys =>
       Promise.all(
-        keys.map(key => {
-          if (key !== CACHE) {
-            return caches.delete(key);
-          }
+        keys.map(k => {
+          if (k !== CACHE) return caches.delete(k);
         })
       )
     )
@@ -30,14 +30,30 @@ self.addEventListener("activate", e => {
   self.clients.claim();
 });
 
+// FETCH → CACHE FIRST REAL
 self.addEventListener("fetch", e => {
+
+  // SOLO GET
+  if (e.request.method !== "GET") return;
+
   e.respondWith(
     caches.match(e.request).then(res => {
-      if (res) return res;
 
-      return fetch(e.request).catch(() => {
-        return caches.match("/index.html");
-      });
+      if (res) {
+        return res; // siempre cache primero
+      }
+
+      return fetch(e.request)
+        .then(networkRes => {
+          return caches.open(CACHE).then(cache => {
+            cache.put(e.request, networkRes.clone());
+            return networkRes;
+          });
+        })
+        .catch(() => {
+          // fallback sólido
+          return caches.match("./index.html");
+        });
     })
   );
 });
