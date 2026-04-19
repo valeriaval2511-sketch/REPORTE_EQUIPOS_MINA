@@ -1,4 +1,4 @@
-const CACHE = "app-mina-v5";
+const CACHE = "app-mina-v6";
 
 const ASSETS = [
   "./",
@@ -40,7 +40,7 @@ self.addEventListener("fetch", e => {
     caches.match(e.request).then(res => {
 
       if (res) {
-        return res; // siempre cache primero
+        return res; // 🔥 siempre cache primero
       }
 
       return fetch(e.request)
@@ -51,7 +51,7 @@ self.addEventListener("fetch", e => {
           });
         })
         .catch(() => {
-          // fallback sólido
+          // 🔥 fallback sólido
           return caches.match("./index.html");
         });
     })
