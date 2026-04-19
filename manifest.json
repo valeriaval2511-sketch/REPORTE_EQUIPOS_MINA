@@ -8,12 +8,12 @@
   "theme_color": "#198754",
   "icons": [
     {
-      "src": "/mi-app/icon-192.png",
+      "src": "/REPORTE_EQUIPOS_MINA/icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/mi-app/icon-512.png",
+      "src": "/REPORTE_EQUIPOS_MINA/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
