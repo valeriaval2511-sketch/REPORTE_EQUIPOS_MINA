@@ -421,7 +421,6 @@ function obtenerGuardia() {
     fecha.setDate(fecha.getDate() - 1);
   }
 
-  // BASE CORRECTA
   const base = new Date("2026-04-14T07:00:00");
 
   const diffDias = Math.floor((fecha - base) / (1000 * 60 * 60 * 24));
@@ -431,9 +430,9 @@ function obtenerGuardia() {
   if (ciclo < 7) {
     return esDia ? "B" : "A";
   } else if (ciclo < 14) {
-    return esDia ? "C" : "B";
+    return esDia ? "A" : "B";
   } else {
-    return esDia ? "A" : "C";
+    return esDia ? "C" : "A";
   }
 }
 
