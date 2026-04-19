@@ -356,31 +356,30 @@ tr:hover{
           <option value="C">C</option>
         </select>
       </div>
-
+    
       <div>
         <label for="filtroEstado">Filtrar por estado</label>
         <select id="filtroEstado" onchange="cargarTablaExcel()">
           <option value="">Todos</option>
           <option value="Operativo">Operativo</option>
           <option value="Inoperativo">Inoperativo</option>
-          <option value="Mantenimiento preven.">Mantenimiento preven.</option>
+          <option value="Mantenimiento prevent.">Mantenimiento prevent.</option>
           <option value="Mantenimiento correct.">Mantenimiento correct.</option>
           <option value="Stand by">Stand by</option>
         </select>
       </div>
-
-    <div style="grid-column:1 / -1;">
-      <label for="filtroFecha">Filtrar por fecha</label>
-      <input type="date" id="filtroFecha" onchange="cargarTablaExcel()">
+    
+      <div style="grid-column:1 / -1;">
+        <label for="filtroFecha">Filtrar por fecha</label>
+        <input type="date" id="filtroFecha" onchange="cargarTablaExcel()">
+      </div>
     </div>
-
-    <button type="button" class="btn-tabla" onclick="cargarTablaExcel()" style="display:block;width:100%;">
+    
+    <button type="button" class="btn-tabla" onclick="cargarTablaExcel()">
       Actualizar tabla
     </button>
-
-    <div style="width:100%;height:10px;"></div>
-      
-    <div class="table-wrap" style="display:block;width:100%;">
+    
+    <div class="table-wrap">
       <div id="tablaResumen"></div>
     </div>
 
@@ -422,7 +421,7 @@ function obtenerGuardia() {
     fecha.setDate(fecha.getDate() - 1);
   }
 
-  // 🔥 BASE CORRECTA
+  // BASE CORRECTA
   const base = new Date("2026-04-14T07:00:00");
 
   const diffDias = Math.floor((fecha - base) / (1000 * 60 * 60 * 24));
@@ -698,12 +697,12 @@ async function sincronizar() {
 function renderTabla(data) {
   if (!Array.isArray(data)) {
     document.getElementById("tablaResumen").innerHTML =
-      "<p style='font-size:13px;color:#991b1b;'>No se pudo cargar la tabla</p>";
+      "<p style='color:red;'>No se pudo cargar la tabla</p>";
     return;
   }
 
-  const g = document.getElementById("filtroGuardia").value;
-  const e = document.getElementById("filtroEstado").value;
+  const g = document.getElementById("filtroGuardia").value.trim();
+  const e = document.getElementById("filtroEstado").value.trim();
   const f = document.getElementById("filtroFecha").value;
 
   let html = `
@@ -719,36 +718,31 @@ function renderTabla(data) {
   let filas = 0;
 
   data.slice(1).forEach(r => {
-    const fecha = r[0] || "";
-    const estado = r[8] || "";
-    const guardia = r[9] || "";
+    const fecha = (r[0] || "").trim();
+    const estado = (r[8] || "").trim();
+    const guardia = (r[9] || "").trim();
 
     let fechaOK = true;
 
     if (f && fecha) {
       const p = fecha.split("/");
       if (p.length === 3) {
-        const iso = `${p[2]}-${String(p[1]).padStart(2, "0")}-${String(p[0]).padStart(2, "0")}`;
+        const iso = `${p[2]}-${String(p[1]).padStart(2,"0")}-${String(p[0]).padStart(2,"0")}`;
         fechaOK = (iso === f);
       } else {
         fechaOK = false;
       }
     }
 
-    if ((!g || guardia === g) && (!e || estado === e) && fechaOK) {
+    const matchGuardia = !g || guardia === g;
+    const matchEstado = !e || estado === e;
+
+    if (matchGuardia && matchEstado && fechaOK) {
+
       let badgeClass = "badge-mantenimiento";
 
-      if (estado === "Operativo") {
-        badgeClass = "badge-operativo";
-      } else if (estado === "Inoperativo") {
-        badgeClass = "badge-inoperativo";
-      } else if (
-        estado === "Mantenimiento preven." ||
-        estado === "Mantenimiento correct." ||
-        estado === "Stand by"
-      ) {
-        badgeClass = "badge-mantenimiento";
-      }
+      if (estado === "Operativo") badgeClass = "badge-operativo";
+      else if (estado === "Inoperativo") badgeClass = "badge-inoperativo";
 
       html += `
         <tr>
@@ -764,11 +758,42 @@ function renderTabla(data) {
 
   html += "</table>";
 
-  if (filas === 0) {
-    document.getElementById("tablaResumen").innerHTML =
-      "<p style='font-size:13px;color:#666;text-align:center;margin-top:10px;'>No hay datos para esos filtros</p>";
-  } else {
-    document.getElementById("tablaResumen").innerHTML = html;
+  document.getElementById("tablaResumen").innerHTML =
+    filas === 0
+      ? "<p style='text-align:center;'>No hay datos</p>"
+      : html;
+}
+
+// Subir la tabla a la interfaz
+  
+async function cargarTablaExcel() {
+  console.log("Cargando tabla...");
+
+  try {
+    const res = await fetch(URL);
+
+    if (!res.ok) {
+      throw new Error("Error al obtener datos");
+    }
+
+    const data = await res.json();
+
+    // Guardar cache
+    localStorage.setItem("tabla_cache", JSON.stringify(data));
+
+    renderTabla(data);
+
+  } catch (err) {
+    console.warn("Offline → usando cache");
+
+    const cache = localStorage.getItem("tabla_cache");
+
+    if (cache) {
+      renderTabla(JSON.parse(cache));
+    } else {
+      document.getElementById("tablaResumen").innerHTML =
+        "<p style='color:red;'>Sin conexión y sin datos</p>";
+    }
   }
 }
 // Eventos de conexión
