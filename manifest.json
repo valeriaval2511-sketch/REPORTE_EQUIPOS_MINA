@@ -1,8 +1,8 @@
 {
   "name": "Ubicación de Equipos Mina",
   "short_name": "Equipos Mina",
-  "start_url": "/",
-  "scope": "/",
+  "start_url": "/REPORTE_EQUIPOS_MINA/",
+  "scope": "/REPORTE_EQUIPOS_MINA/",
   "display": "standalone",
   "background_color": "#eef2f6",
   "theme_color": "#198754",
