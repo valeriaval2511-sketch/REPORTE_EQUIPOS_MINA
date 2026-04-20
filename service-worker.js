@@ -1,6 +1,6 @@
-const CACHE = "app-mina-v6";
+const CACHE = "app-mina-v10";
 
-const BASE = "/REPORTE_EQUIPOS_MINA/"; // CAMBIA ESTO
+const BASE = "/REPORTE_EQUIPOS_MINA/";
 
 const ASSETS = [
   BASE,
@@ -10,21 +10,25 @@ const ASSETS = [
   BASE + "icon-512.png"
 ];
 
-// INSTALL
-self.addEventListener("install", e => {
-  e.waitUntil(
-    caches.open(CACHE).then(cache => cache.addAll(ASSETS))
+// 🔹 INSTALL
+self.addEventListener("install", event => {
+  event.waitUntil(
+    caches.open(CACHE).then(cache => {
+      return cache.addAll(ASSETS);
+    })
   );
   self.skipWaiting();
 });
 
-// ACTIVATE
-self.addEventListener("activate", e => {
-  e.waitUntil(
+// 🔹 ACTIVATE
+self.addEventListener("activate", event => {
+  event.waitUntil(
     caches.keys().then(keys =>
       Promise.all(
-        keys.map(k => {
-          if (k !== CACHE) return caches.delete(k);
+        keys.map(key => {
+          if (key !== CACHE) {
+            return caches.delete(key);
+          }
         })
       )
     )
@@ -32,25 +36,38 @@ self.addEventListener("activate", e => {
   self.clients.claim();
 });
 
-// FETCH
-self.addEventListener("fetch", e => {
+// 🔹 FETCH (ESTO ES LO IMPORTANTE)
+self.addEventListener("fetch", event => {
 
-  if (e.request.method !== "GET") return;
+  if (event.request.method !== "GET") return;
 
-  e.respondWith(
-    caches.match(e.request).then(res => {
+  // 🔥 1. CUANDO SE ABRE LA APP (CRÍTICO)
+  if (event.request.mode === "navigate") {
+    event.respondWith(
+      fetch(event.request).catch(() => {
+        return caches.match(BASE + "index.html");
+      })
+    );
+    return;
+  }
 
-      if (res) return res;
+  // 🔥 2. ARCHIVOS NORMALES
+  event.respondWith(
+    caches.match(event.request).then(cached => {
 
-      return fetch(e.request)
+      if (cached) {
+        return cached;
+      }
+
+      return fetch(event.request)
         .then(networkRes => {
           return caches.open(CACHE).then(cache => {
-            cache.put(e.request, networkRes.clone());
+            cache.put(event.request, networkRes.clone());
             return networkRes;
           });
         })
         .catch(() => {
-          return caches.match(BASE + "index.html"); // CLAVE
+          return caches.match(BASE + "index.html");
         });
     })
   );
