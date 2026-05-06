@@ -40,6 +40,12 @@ function obtenerPendientes() {
 }
 
 function eliminarPendiente(id) {
-  const tx = db.transaction("pendientes", "readwrite");
-  tx.objectStore("pendientes").delete(id);
+  return new Promise((resolve, reject) => {
+
+    const tx = db.transaction("pendientes", "readwrite");
+    const req = tx.objectStore("pendientes").delete(id);
+
+    req.onsuccess = () => resolve();
+    req.onerror = () => reject();
+  });
 }
