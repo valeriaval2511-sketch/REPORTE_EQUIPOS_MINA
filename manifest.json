@@ -1,19 +1,19 @@
 {
-  "name": "Ubicación de Equipos Mina",
+  "name": "Equipos Mina",
   "short_name": "Equipos Mina",
-  "start_url": "/REPORTE_EQUIPOS_MINA/",
-  "scope": "/REPORTE_EQUIPOS_MINA/",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#eef2f6",
-  "theme_color": "#198754",
+  "background_color": "#eef2f5",
+  "theme_color": "#1f2937",
+  "orientation": "portrait",
   "icons": [
     {
-      "src": "/REPORTE_EQUIPOS_MINA/icon-192.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/REPORTE_EQUIPOS_MINA/icon-512.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }

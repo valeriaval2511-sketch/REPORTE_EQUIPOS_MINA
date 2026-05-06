@@ -3,848 +3,188 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reporte Mina</title>
+<title>Ubicación de Equipos - Mina </title>
 
-<link rel="manifest" href="./manifest.json">
+<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#198754">
 
-<style>
-*{box-sizing:border-box}
-
-body{
-  margin:0;
-  background:#eef2f6;
-  font-family:Arial, sans-serif;
-  color:#222;
-}
-
-.container{
-  max-width:520px;
-  margin:auto;
-  padding:14px;
-}
-
-.card{
-  background:#fff;
-  padding:18px;
-  border-radius:16px;
-  box-shadow:0 8px 20px rgba(0,0,0,0.08);
-}
-
-h1,h3,label,th{
-  font-family:'Century Gothic', Arial, sans-serif;
-  font-weight:bold;
-}
-
-h1{
-  margin:0 0 4px 0;
-  font-size:22px;
-  line-height:1.1;
-}
-
-h3{
-  margin:18px 0 8px 0;
-  font-size:18px;
-}
-
-.estado-box{
-  margin-top:2px;
-  font-size:12px;
-  padding:5px 12px;
-  border-radius:999px;
-  display:inline-block;
-  font-weight:bold;
-}
-
-.estado-ok{background:#d1fae5;color:#065f46}
-.estado-off{background:#fee2e2;color:#991b1b}
-.estado-sync{background:#fef3c7;color:#92400e}
-
-.pendientes{
-  margin-top:4px;
-  font-size:12px;
-  color:#555;
-}
-
-label{
-  margin-top:10px;
-  margin-bottom:6px;
-  display:block;
-  font-size:13px;
-}
-
-input,select,textarea{
-  width:100%;
-  padding:10px 12px;
-  border-radius:12px;
-  border:1px solid #cfd6dd;
-  font-size:14px;
-  background:#fff;
-}
-
-textarea{
-  height:88px;
-  resize:vertical;
-}
-
-.row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  align-items:end;
-}
-
-.btns{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-top:14px;
-}
-
-button{
-  padding:11px 12px;
-  border:none;
-  border-radius:12px;
-  font-weight:bold;
-  font-family:Arial, sans-serif;
-  cursor:pointer;
-}
-
-.btn-save{
-  background:#2f6edb;
-  color:#fff;
-}
-
-.btn-sync{
-  background:#198754;
-  color:#fff;
-}
-
-.btn-tabla{
-  background:#198754;
-  color:#fff;
-  margin-top:10px;
-  width:100%;
-  display:block;
-}
-
-#mensaje{
-  margin-top:10px;
-  font-size:13px;
-}
-
-#tablaResumen{
-  margin-top:12px;
-}
-
-.table-wrap{
-  margin-top:10px;
-  width:100%;
-  overflow-x:auto;
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  background:#fff;
-  font-family:Arial, sans-serif;
-  font-size:12px;
-  table-layout:auto;
-}
-
-th{
-  background:#198754;
-  color:#fff;
-  padding:9px 6px;
-  white-space:nowrap;
-  text-align:center;
-  font-size:12px;
-}
-
-td{
-  padding:9px 6px;
-  border-bottom:1px solid #e5e7eb;
-  vertical-align:middle;
-  text-align:center;
-  font-size:12px;
-  word-wrap:break-word;
-  white-space:nowrap;
-}
-
-tr:hover{
-  background:#f9fafb;
-}
-
-.badge{
-  display:inline-block;
-  padding:4px 10px;
-  border-radius:999px;
-  color:#fff;
-  font-weight:bold;
-  font-size:11px;
-  white-space:nowrap;
-}
-
-.badge-operativo{
-  background:#198754;
-}
-
-.badge-inoperativo{
-  background:#dc3545;
-}
-
-.badge-mantenimiento{
-  background:#d39e00;
-}
-
-.small-note{
-  font-size:12px;
-  color:#666;
-  margin-top:6px;
-}
-
-.autocomplete-wrap{
-  position:relative;
-}
-
-.autocomplete-list{
-  position:absolute;
-  top:100%;
-  left:0;
-  right:0;
-  background:#fff;
-  border:1px solid #cfd6dd;
-  border-top:none;
-  border-radius:0 0 12px 12px;
-  max-height:180px;
-  overflow-y:auto;
-  z-index:20;
-  box-shadow:0 8px 20px rgba(0,0,0,0.08);
-  display:none;
-}
-
-.autocomplete-item{
-  padding:10px 12px;
-  font-size:13px;
-  cursor:pointer;
-  border-bottom:1px solid #f1f5f9;
-}
-
-.autocomplete-item:last-child{
-  border-bottom:none;
-}
-
-.autocomplete-item:hover{
-  background:#f3f4f6;
-}
-
-@media (max-width:480px){
-  .row{
-    grid-template-columns:1fr;
-  }
-
-  table{
-    font-size:11px;
-  }
-
-  th,td{
-    padding:8px 4px;
-    font-size:11px;
-  }
-
-  .badge{
-    min-width:86px;
-    font-size:10px;
-  }
-}
-#tablaResumen{
-  width:100%;
-}
-
-#tablaResumen table{
-  width:100%;
-}
-#tablaResumen table{
-  width:100%;
-}
-
-#tablaResumen th,
-#tablaResumen td{
-  width:25%; 
-}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-<div class="container">
-  <div class="card">
 
-    <h1>Reporte Equipos</h1>
-    <div id="estadoConexion" class="estado-box">Verificando...</div>
-    <div id="pendientes" class="pendientes"></div>
+<div class="app">
 
-    <label for="tipo">Tipo</label>
-    <select id="tipo">
-      <option value="Entrada">Entrada</option>
-      <option value="Salida">Salida</option>
-    </select>
+<header class="topbar">
+  <h1>Equipos Mina</h1>
+  <div id="estadoConexion" class="estado online">Conectando...</div>
+</header>
 
-    <div class="row">
-      <div>
-        <label for="guardia">Guardia</label>
-        <input id="guardia" readonly>
-      </div>
-      <div>
-        <label for="labor">Labor</label>
-        <div class="autocomplete-wrap">
-          <input id="labor" autocomplete="off">
-          <div id="listaLabor" class="autocomplete-list"></div>
-        </div>
-      </div>
-    </div>
+<!-- REGISTRO -->
+<section class="card">
+<h3>Registro</h3>
 
-    <div class="row">
-      <div>
-        <label for="equipo">Equipo</label>
-        <div class="autocomplete-wrap">
-          <input id="equipo" autocomplete="off">
-          <div id="listaEquipo" class="autocomplete-list"></div>
-        </div>
-      </div>
-      <div>
-        <label for="estado">Estado</label>
-        <select id="estado">
-          <option value="Operativo">Operativo</option>
-          <option value="Inoperativo">Inoperativo</option>
-          <option value="Mantenimiento prevent.">Mantenimiento preven.</option>
-          <option value="Mantenimiento correct.">Mantenimiento correct.</option>
-          <option value="Stand by">Stand by</option>
-        </select>
-      </div>
-    </div>
+<div class="fila2">
+<div>
+<label>Tipo</label>
+<select id="tipo">
+<option value="Entrada">Entrada</option>
+<option value="Salida">Salida</option>
+</select>
+</div>
 
-    <label for="dni">DNI</label>
-    <div class="autocomplete-wrap">
-      <input id="dni" autocomplete="off">
-      <div id="listaDni" class="autocomplete-list"></div>
-    </div>
+<div>
+<label>Guardia</label>
+<select id="guardia">
+<option>A</option>
+<option>B</option>
+<option>C</option>
+</select>
+</div>
+</div>
 
-    <label>Nombre</label>
-      <input id="nombre" readonly>
+<label>DNI</label>
+<input id="dni" list="listaDNI">
+<datalist id="listaDNI"></datalist>
 
-    <label for="obs">Observación</label>
-    <textarea id="obs"></textarea>
+<div id="nombre" class="nombreVista"></div>
 
-    <div class="btns">
-      <button class="btn-save" onclick="guardar()">Guardar</button>
-      <button id="btnSync" class="btn-sync" onclick="sincronizar()">Sincronizar</button>
-    </div>
+<label>Equipo</label>
+<input id="equipo" list="listaEquipos">
+<datalist id="listaEquipos"></datalist>
 
-    <div id="mensaje"></div>
+<label>Labor</label>
+<input id="labor" list="listaLabores">
+<datalist id="listaLabores"></datalist>
 
-    <hr style="margin:18px 0;border:none;height:1px;background:#ddd;">
+<label>Estado</label>
+<select id="estado">
+<option>Operativo</option>
+<option>Inoperativo</option>
+<option>Mtto Preventivo</option>
+<option>Mtto Correctivo</option>
+<option>Stand By</option>
+</select>
 
-    <h3>Datos del Excel</h3>
+</section>
 
-    <div class="row">
-      <div>
-        <label for="filtroGuardia">Filtrar por guardia</label>
-        <select id="filtroGuardia" onchange="cargarTablaExcel()">
-          <option value="">Todas</option>
-          <option value="A">A</option>
-          <option value="B">B</option>
-          <option value="C">C</option>
-        </select>
-      </div>
-    
-      <div>
-        <label for="filtroEstado">Filtrar por estado</label>
-        <select id="filtroEstado" onchange="cargarTablaExcel()">
-          <option value="">Todos</option>
-          <option value="Operativo">Operativo</option>
-          <option value="Inoperativo">Inoperativo</option>
-          <option value="Mantenimiento prevent.">Mantenimiento prevent.</option>
-          <option value="Mantenimiento correct.">Mantenimiento correct.</option>
-          <option value="Stand by">Stand by</option>
-        </select>
-      </div>
-    
-      <div style="grid-column:1 / -1;">
-        <label for="filtroFecha">Filtrar por fecha</label>
-        <input type="date" id="filtroFecha" onchange="cargarTablaExcel()">
-      </div>
-    </div>
-    
-    <button type="button" class="btn-tabla" onclick="cargarTablaExcel()">
-      Actualizar tabla
+<!-- EVIDENCIA -->
+<section class="card">
+<h3>Evidencia</h3>
+
+<label>Observación</label>
+<textarea id="obs"></textarea>
+
+<label>Foto</label>
+
+<input
+type="file"
+id="foto"
+accept="image/*"
+style="display:none;">
+
+<button
+type="button"
+class="btn gris"
+onclick="document.getElementById('foto').click()">
+Tomar Foto
+</button>
+
+<div id="nombreFoto"></div>
+
+</section>
+
+<!-- ACCIONES -->
+<section class="card">
+<h3>Acciones</h3>
+
+<button id="btnGuardar" class="btn azul">
+Guardar Registro
+</button>
+
+<button id="btnSync" class="btn verde">
+Sincronizar
+</button>
+
+<div id="mensaje"></div>
+
+<div class="pendientes">
+Pendientes: <span id="numPendientes">0</span>
+</div>
+
+<button class="btn gris" id="btnTabla">
+Mostrar Tabla
+</button>
+
+</section>
+
+<!-- HISTORIAL -->
+<section class="card" id="seccionTabla" style="display:none;">
+<h3>Últimos registros</h3>
+
+<div class="fila2">
+<div>
+<label>Fecha</label>
+<input type="date" id="filtroFecha">
+</div>
+
+<div>
+<label>Guardia</label>
+<select id="filtroGuardia">
+<option value="">Todas</option>
+<option>A</option>
+<option>B</option>
+<option>C</option>
+</select>
+</div>
+</div>
+
+<label>Equipo</label>
+<input id="filtroEquipo" list="listaEquipos">
+
+<label>Estado</label>
+<select id="filtroEstado">
+<option value="">Todos</option>
+<option>Operativo</option>
+<option>Inoperativo</option>
+<option>Mtto Preventivo</option>
+<option>Mtto Correctivo</option>
+<option>Stand By</option>
+</select>
+
+<button class="btn verde" id="btnFiltrar">
+Filtrar
+</button>
+
+<div id="tabla"></div>
+
+</section>
+
+</div>
+
+<div id="modalObs" class="modal">
+  <div class="modal-box">
+    <h3>Observación</h3>
+
+    <div id="textoObs"></div>
+
+    <button class="btn verde" onclick="cerrarModal()">
+      Cerrar
     </button>
-    
-    <div class="table-wrap">
-      <div id="tablaResumen"></div>
-    </div>
-
   </div>
 </div>
 
+<script src="db.js"></script>
+<script src="sync.js"></script>
+<script src="app.js"></script>
+
 <script>
-const URL = "https://script.google.com/macros/s/AKfycbzGMqcrhYRMPCSRjDx5W0LFMunXITi9N-FaDyS7tcSuE_UpmveOScwqLj5_-l5EfVarYw/exec";
-
-let listasMaestras = {
-  dni: [],
-  equipos: [],
-  labores: []
-};
-
-// Fecha limpia
-function obtenerFecha() {
-  const n = new Date();
-  const dd = String(n.getDate()).padStart(2, '0');
-  const mm = String(n.getMonth() + 1).padStart(2, '0');
-  const yyyy = n.getFullYear();
-  const hh = String(n.getHours()).padStart(2, '0');
-  const mi = String(n.getMinutes()).padStart(2, '0');
-  const ss = String(n.getSeconds()).padStart(2, '0');
-  return `${dd}/${mm}/${yyyy} ${hh}:${mi}:${ss}`;
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./service-worker.js")
+    .then(() => console.log("SW registrado"))
+    .catch(err => console.log(err));
 }
-
-// Guardia automática
-
-function obtenerGuardia() {
-
-  const ahora = new Date();
-  const hora = ahora.getHours();
-
-  const esDia = hora >= 7 && hora < 19;
-
-  const fecha = new Date(ahora);
-  if (hora < 7) {
-    fecha.setDate(fecha.getDate() - 1);
-  }
-
-  const base = new Date(2026, 3, 21, 7, 0, 0);
-
-  const diffDias = Math.floor((fecha - base) / (1000 * 60 * 60 * 24));
-
-  const ciclo = ((diffDias % 21) + 21) % 21;
-
-  if (ciclo < 7) {
-    return esDia ? "B" : "A";
-  } else if (ciclo < 14) {
-    return esDia ? "A" : "B";
-  } else {
-    return esDia ? "C" : "A";
-  }
-}
-
-// Actualizar guardia visible
-function actualizarGuardiaVisible() {
-  document.getElementById("guardia").value = obtenerGuardia();
-}
-
-// Estado conexión
-function actualizarEstado(tipo) {
-  const el = document.getElementById("estadoConexion");
-  el.className = "estado-box";
-
-  if (tipo === "online") {
-    el.textContent = "Con conexión";
-    el.classList.add("estado-ok");
-  } else if (tipo === "offline") {
-    el.textContent = "Sin conexión";
-    el.classList.add("estado-off");
-  } else if (tipo === "sync") {
-    el.textContent = "Sincronizando...";
-    el.classList.add("estado-sync");
-  }
-}
-
-function verificarConexion() {
-  const estado = document.getElementById("estadoConexion");
-
-  if (navigator.onLine) {
-    estado.textContent = "Con conexión";
-    estado.className = "estado-box estado-ok";
-  } else {
-    estado.textContent = "Sin conexión";
-    estado.className = "estado-box estado-off";
-  }
-}
-
-// Mensaje
-function mostrarMensaje(t) {
-  document.getElementById("mensaje").textContent = t;
-}
-
-// Pendientes
-function actualizarPendientes() {
-  const arr = JSON.parse(localStorage.getItem("data") || "[]");
-  document.getElementById("pendientes").textContent = "Pendientes: " + arr.length;
-}
-
-async function cargarListasMaestras() {
-  try {
-    const res = await fetch(URL + "?listas=1");
-    const data = await res.json();
-
-    listasMaestras = data;
-
-    // GUARDAR LOCAL
-    localStorage.setItem("listas", JSON.stringify(data));
-
-  } catch (error) {
-
-    console.warn("Offline → usando listas guardadas");
-
-    const guardado = localStorage.getItem("listas");
-
-    if (guardado) {
-      listasMaestras = JSON.parse(guardado);
-    } else {
-      listasMaestras = { dni: [], equipos: [], labores: [] };
-    }
-  }
-}
-
-// Mostrar dropdown bonito
-function inicializarAutocomplete(inputId, listaId, tipoLista) {
-  const input = document.getElementById(inputId);
-  const lista = document.getElementById(listaId);
-
-  input.addEventListener("input", () => {
-    const valor = input.value.trim().toLowerCase();
-    lista.innerHTML = "";
-
-    if (!valor) {
-      lista.style.display = "none";
-      return;
-    }
-
-    const origen = listasMaestras[tipoLista] || [];
-
-    console.log("USANDO LISTA:", tipoLista, origen);
-    const filtrados = origen
-      .filter(item => {
-        if (tipoLista === "dni") {
-          return item.dni.toLowerCase().includes(valor) ||
-                 item.nombre.toLowerCase().includes(valor);
-        } else {
-          return item.toLowerCase().includes(valor);
-        }
-      })
-      .slice(0, 8);
-
-    if (filtrados.length === 0) {
-      lista.style.display = "none";
-      return;
-    }
-
-    filtrados.forEach(item => {
-      const div = document.createElement("div");
-      div.className = "autocomplete-item";
-      if (tipoLista === "dni") {
-        div.textContent = item.dni + " - " + item.nombre;
-      } else {
-        div.textContent = item;
-      }
-
-      div.onclick = () => {
-        if (tipoLista === "dni") {
-          input.value = item.dni;
-          document.getElementById("nombre").value = item.nombre;
-        } else {
-          input.value = item;
-        }
-      
-        lista.style.display = "none";
-      };
-      lista.appendChild(div);
-    });
-
-    lista.style.display = "block";
-  });
-
-  input.addEventListener("focus", () => {
-    input.dispatchEvent(new Event("input"));
-  });
-
-  document.addEventListener("click", (e) => {
-    if (!lista.contains(e.target) && e.target !== input) {
-      lista.style.display = "none";
-    }
-  });
-}
-
-// Validar que el valor exista en la lista
-function existeEnLista(valor, tipoLista) {
-  const origen = listasMaestras[tipoLista] || [];
-
-  if (tipoLista === "dni") {
-    return origen.some(x => x.dni === valor.trim());
-  } else {
-    return origen.includes(valor.trim());
-  }
-}
-
-// Guardar local
-function guardar() {
-  const data = {
-    id: Date.now().toString() + "_" + Math.floor(Math.random() * 1000),
-    fecha: obtenerFecha(),
-    tipo: document.getElementById("tipo").value,
-    dni: document.getElementById("dni").value.trim(),
-    nombre: document.getElementById("nombre").value.trim(),
-    equipo: document.getElementById("equipo").value.trim(),
-    labor: document.getElementById("labor").value.trim(),
-    estado: document.getElementById("estado").value,
-    guardia: obtenerGuardia(),
-    observacion: document.getElementById("obs").value.trim()
-  };
-
-  if (!data.dni || !data.equipo || !data.labor || !data.observacion) {
-    mostrarMensaje("Completa DNI, equipo, labor y observación");
-    return;
-  }
-
-  if (!existeEnLista(data.dni, "dni")) {
-    mostrarMensaje("El DNI debe ser uno de la lista");
-    return;
-  }
-
-  if (!existeEnLista(data.equipo, "equipos")) {
-    mostrarMensaje("El equipo debe ser uno de la lista");
-    return;
-  }
-
-  if (!existeEnLista(data.labor, "labores")) {
-    mostrarMensaje("La labor debe ser una de la lista");
-    return;
-  }
-
-  let arr = JSON.parse(localStorage.getItem("data") || "[]");
-  arr.push(data);
-  localStorage.setItem("data", JSON.stringify(arr));
-
-  mostrarMensaje("Guardado localmente");
-  actualizarPendientes();
-
-  document.getElementById("dni").value = "";
-  document.getElementById("nombre").value = "";
-  document.getElementById("equipo").value = "";
-  document.getElementById("labor").value = "";
-  document.getElementById("obs").value = "";
-}
-
-// Sincronizar
-let sincronizando = false;
-
-async function sincronizar() {
-  if (sincronizando) {
-    mostrarMensaje("Ya se está sincronizando...");
-    return;
-  }
-
-  const arr = JSON.parse(localStorage.getItem("data") || "[]");
-
-  if (arr.length === 0) {
-    mostrarMensaje("No hay datos pendientes");
-    actualizarPendientes();
-    return;
-  }
-
-  sincronizando = true;
-
-  const btn = document.getElementById("btnSync");
-  btn.disabled = true;
-  btn.textContent = "Enviando...";
-  actualizarEstado("sync");
-
-  try {
-    for (const r of arr) {
-      const res = await fetch(URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain" },
-        body: JSON.stringify(r)
-      });
-
-      const txt = await res.text();
-
-      if (!res.ok || txt.includes("ERROR") || txt.includes("Error")) {
-        throw new Error(txt || "Fallo al enviar");
-      }
-    }
-
-    localStorage.removeItem("data");
-    mostrarMensaje("Sincronizado correctamente");
-    actualizarPendientes();
-    cargarTablaExcel();
-
-  } catch (err) {
-    console.error(err);
-    mostrarMensaje("Error al sincronizar");
-    actualizarEstado("offline");
-  } finally {
-    sincronizando = false;
-    btn.disabled = false;
-    btn.textContent = "Sincronizar";
-    if (navigator.onLine) {
-      actualizarEstado("online");
-    }
-  }
-}
-
-// Cargar tabla desde Excel
-function renderTabla(data) {
-  if (!Array.isArray(data)) {
-    document.getElementById("tablaResumen").innerHTML =
-      "<p style='color:red;'>No se pudo cargar la tabla</p>";
-    return;
-  }
-
-  const g = document.getElementById("filtroGuardia").value.trim();
-  const e = document.getElementById("filtroEstado").value.trim();
-  const f = document.getElementById("filtroFecha").value;
-
-  let html = `
-    <table>
-      <tr>
-        <th>Equipo</th>
-        <th>Labor</th>
-        <th>Estado</th>
-        <th>Obs</th>
-      </tr>
-  `;
-
-  let filas = 0;
-
-  data.slice(1).forEach(r => {
-    const fecha = (r[0] || "").trim();
-    const estado = (r[8] || "").trim();
-    const guardia = (r[9] || "").trim();
-
-    let fechaOK = true;
-
-    if (f && fecha) {
-      const p = fecha.split("/");
-      if (p.length === 3) {
-        const iso = `${p[2]}-${String(p[1]).padStart(2,"0")}-${String(p[0]).padStart(2,"0")}`;
-        fechaOK = (iso === f);
-      } else {
-        fechaOK = false;
-      }
-    }
-
-    const matchGuardia = !g || guardia === g;
-    const matchEstado = !e || estado === e;
-
-    if (matchGuardia && matchEstado && fechaOK) {
-
-      let badgeClass = "badge-mantenimiento";
-
-      if (estado === "Operativo") badgeClass = "badge-operativo";
-      else if (estado === "Inoperativo") badgeClass = "badge-inoperativo";
-
-      html += `
-        <tr>
-          <td>${r[6] || ""}</td>
-          <td>${r[7] || ""}</td>
-          <td><span class="badge ${badgeClass}">${estado}</span></td>
-          <td>${r[10] || ""}</td>
-        </tr>
-      `;
-      filas++;
-    }
-  });
-
-  html += "</table>";
-
-  document.getElementById("tablaResumen").innerHTML =
-    filas === 0
-      ? "<p style='text-align:center;'>No hay datos</p>"
-      : html;
-}
-
-// Subir la tabla a la interfaz
-  
-async function cargarTablaExcel() {
-  console.log("Cargando tabla...");
-
-  try {
-    const res = await fetch(URL);
-
-    if (!res.ok) {
-      throw new Error("Error al obtener datos");
-    }
-
-    const data = await res.json();
-
-    // Guardar cache
-    localStorage.setItem("tabla_cache", JSON.stringify(data));
-
-    renderTabla(data);
-
-  } catch (err) {
-    console.warn("Offline → usando cache");
-
-    const cache = localStorage.getItem("tabla_cache");
-
-    if (cache) {
-      renderTabla(JSON.parse(cache));
-    } else {
-      document.getElementById("tablaResumen").innerHTML =
-        "<p style='color:red;'>Sin conexión y sin datos</p>";
-    }
-  }
-}
-// Eventos de conexión
-window.addEventListener("online", () => {
-  actualizarEstado("online");
-  const arr = JSON.parse(localStorage.getItem("data") || "[]");
-  if (arr.length > 0) {
-    mostrarMensaje("Conexión recuperada, enviando...");
-    sincronizar();
-  }
-});
-
-window.addEventListener("offline", () => {
-  actualizarEstado("offline");
-});
-
-// Inicial
-
-window.addEventListener("load", async () => {
-
-  actualizarGuardiaVisible();
-  actualizarPendientes();
-  verificarConexion();
-
-  await cargarListasMaestras();
-
-  console.log("LISTAS CARGADAS:", listasMaestras);
-
-  inicializarAutocomplete("dni", "listaDni", "dni");
-  inicializarAutocomplete("equipo", "listaEquipo", "equipos");
-  inicializarAutocomplete("labor", "listaLabor", "labores");
-
-  await cargarTablaExcel();
-
-  document.getElementById("dni").addEventListener("input", () => {
-    const valor = document.getElementById("dni").value.trim();
-
-    const encontrado = listasMaestras.dni.find(x => x.dni === valor);
-
-    document.getElementById("nombre").value = encontrado ? encontrado.nombre : "";
-  });
-
-  const arr = JSON.parse(localStorage.getItem("data") || "[]");
-  if (navigator.onLine && arr.length > 0) {
-    mostrarMensaje("Enviando datos pendientes...");
-    sincronizar();
-  }
-
-});
-
-setInterval(actualizarGuardiaVisible, 30000);
-  
 </script>
+
 </body>
 </html>
