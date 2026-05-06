@@ -37,10 +37,14 @@ async function sincronizar() {
     if (!res.ok) throw new Error();
 
     for (let item of lote) {
-      eliminarPendiente(item.id);
+      await eliminarPendiente(item.id);
     }
-
+    
     mensaje("Lote enviado");
+    
+    document.getElementById("foto").value = "";
+    document.getElementById("nombreFoto").textContent = "";
+    
     cargarTabla();
     actualizarPendientes();
   
