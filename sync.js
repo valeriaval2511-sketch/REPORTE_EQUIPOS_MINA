@@ -39,11 +39,19 @@ async function sincronizar() {
     for (let item of lote) {
       await eliminarPendiente(item.id);
     }
-    
-    mensaje("Lote enviado");
+
+    mensaje("Reporte enviado");
     
     document.getElementById("foto").value = "";
     document.getElementById("nombreFoto").textContent = "";
+    document.getElementById("dni").value = "";
+    document.getElementById("nombre").textContent = "";
+    document.getElementById("equipo").value = "";
+    document.getElementById("labor").value = "";
+    document.getElementById("obs").value = "";
+    
+    document.getElementById("tipo").value = "Entrada";
+    document.getElementById("estado").value = "Operativo";
     
     cargarTabla();
     actualizarPendientes();
